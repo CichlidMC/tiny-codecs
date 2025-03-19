@@ -1,5 +1,6 @@
 package io.github.cichlidmc.tinycodecs;
 
+import io.github.cichlidmc.tinycodecs.codec.AlternativeCodec;
 import io.github.cichlidmc.tinycodecs.codec.ByNameCodec;
 import io.github.cichlidmc.tinycodecs.codec.map.CompositeCodec;
 import io.github.cichlidmc.tinycodecs.codec.DispatchCodec;
@@ -14,6 +15,7 @@ import io.github.cichlidmc.tinyjson.value.primitive.JsonBool;
 import io.github.cichlidmc.tinyjson.value.primitive.JsonNumber;
 import io.github.cichlidmc.tinyjson.value.primitive.JsonString;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -129,8 +131,17 @@ public interface Codecs {
 		return dispatch(codec, "type", typeGetter, codecGetter);
 	}
 
+	static <T> Codec<T> withAlternative(Codec<T> first, Codec<T> second) {
+		return new AlternativeCodec<>(first, second);
+	}
+
 	static <T> Codec<List<T>> listOf(Codec<T> elementCodec) {
 		return new ListCodec<>(elementCodec);
+	}
+
+	static <T> Codec<List<T>> listOrSingle(Codec<T> elementCodec) {
+		Codec<List<T>> singleton = elementCodec.xmap(Collections::singletonList, list -> list.get(0));
+		return withAlternative(elementCodec.listOf(), singleton);
 	}
 
 	static <T> Codec<Optional<T>> optional(Codec<T> codec) {

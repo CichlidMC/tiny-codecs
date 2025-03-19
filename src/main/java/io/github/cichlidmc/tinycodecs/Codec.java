@@ -61,8 +61,16 @@ public interface Codec<T> {
 		return Codecs.dispatch(this, typeGetter, codecGetter);
 	}
 
+	default Codec<T> withAlternative(Codec<T> alternative) {
+		return Codecs.withAlternative(this, alternative);
+	}
+
 	default Codec<List<T>> listOf() {
 		return Codecs.listOf(this);
+	}
+
+	default Codec<List<T>> listOrSingle() {
+		return Codecs.listOrSingle(this);
 	}
 
 	default Codec<Optional<T>> optional() {
