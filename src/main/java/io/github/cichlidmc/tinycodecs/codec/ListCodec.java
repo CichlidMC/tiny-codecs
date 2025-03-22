@@ -18,6 +18,10 @@ public final class ListCodec<T> implements Codec<List<T>> {
 
 	@Override
 	public DecodeResult<List<T>> decode(JsonValue value) {
+		if (!(value instanceof JsonArray)) {
+			return DecodeResult.error("Not a list: " + value);
+		}
+
 		JsonArray array = value.asArray();
 		if (array.size() == 0) {
 			return DecodeResult.success(Collections.emptyList());
