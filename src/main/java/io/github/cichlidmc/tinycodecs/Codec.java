@@ -1,5 +1,6 @@
 package io.github.cichlidmc.tinycodecs;
 
+import io.github.cichlidmc.tinycodecs.util.Either;
 import io.github.cichlidmc.tinyjson.value.JsonValue;
 
 import java.util.List;
@@ -83,6 +84,10 @@ public interface Codec<T> {
 
 	default Codec<T> optional(T fallback) {
 		return Codecs.optional(this, fallback);
+	}
+
+	default <B> Codec<Either<T, B>> xor(Codec<B> otherCodec) {
+		return Codecs.xor(this, otherCodec);
 	}
 
 	default MapCodec<T> fieldOf(String name) {

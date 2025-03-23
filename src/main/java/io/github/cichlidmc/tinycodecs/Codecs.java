@@ -2,14 +2,17 @@ package io.github.cichlidmc.tinycodecs;
 
 import io.github.cichlidmc.tinycodecs.codec.AlternativeCodec;
 import io.github.cichlidmc.tinycodecs.codec.ByNameCodec;
-import io.github.cichlidmc.tinycodecs.codec.map.CompositeCodec;
 import io.github.cichlidmc.tinycodecs.codec.DispatchCodec;
-import io.github.cichlidmc.tinycodecs.codec.map.FieldOfCodec;
 import io.github.cichlidmc.tinycodecs.codec.ListCodec;
-import io.github.cichlidmc.tinycodecs.codec.map.MapCodecAsCodec;
 import io.github.cichlidmc.tinycodecs.codec.ThrowingCodec;
+import io.github.cichlidmc.tinycodecs.codec.UnitCodec;
+import io.github.cichlidmc.tinycodecs.codec.XorCodec;
+import io.github.cichlidmc.tinycodecs.codec.map.CompositeCodec;
+import io.github.cichlidmc.tinycodecs.codec.map.FieldOfCodec;
+import io.github.cichlidmc.tinycodecs.codec.map.MapCodecAsCodec;
 import io.github.cichlidmc.tinycodecs.codec.optional.DefaultedOptionalCodec;
 import io.github.cichlidmc.tinycodecs.codec.optional.OptionalCodec;
+import io.github.cichlidmc.tinycodecs.util.Either;
 import io.github.cichlidmc.tinyjson.value.JsonValue;
 import io.github.cichlidmc.tinyjson.value.primitive.JsonBool;
 import io.github.cichlidmc.tinyjson.value.primitive.JsonNumber;
@@ -94,6 +97,10 @@ public interface Codecs {
 		return byName(clazz, Enum::name);
 	}
 
+	static <T> Codec<T> unit(T unit) {
+		return new UnitCodec<>(unit);
+	}
+
 	// transforms for existing codecs
 
 	static <T> Codec<T> validate(Codec<T> codec, Predicate<T> validator) {
@@ -155,6 +162,10 @@ public interface Codecs {
 	static <T> Codec<T> optional(Codec<T> codec, T fallback) {
 		Supplier<T> supplier = () -> fallback;
 		return optional(codec, supplier);
+	}
+
+	static <L, R> Codec<Either<L, R>> xor(Codec<L> left, Codec<R> right) {
+		return new XorCodec<>(left, right);
 	}
 
 	static <T> MapCodec<T> fieldOf(Codec<T> codec, String name) {
