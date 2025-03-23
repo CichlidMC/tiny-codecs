@@ -9,7 +9,7 @@ public interface MapCodec<T> {
 	/**
 	 * Attempt to decode an object from fields on the given JSON object.
 	 */
-	DecodeResult<T> decode(JsonObject json);
+	CodecResult<T> decode(JsonObject json);
 
 	/**
 	 * Encode the given value onto the given JSON object.

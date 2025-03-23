@@ -1,7 +1,7 @@
 package io.github.cichlidmc.tinycodecs.codec.optional;
 
 import io.github.cichlidmc.tinycodecs.Codec;
-import io.github.cichlidmc.tinycodecs.DecodeResult;
+import io.github.cichlidmc.tinycodecs.CodecResult;
 import io.github.cichlidmc.tinyjson.value.JsonValue;
 import io.github.cichlidmc.tinyjson.value.primitive.JsonNull;
 
@@ -15,9 +15,9 @@ public final class OptionalCodec<T> implements Codec<Optional<T>> {
 	}
 
 	@Override
-	public DecodeResult<Optional<T>> decode(JsonValue value) {
+	public CodecResult<Optional<T>> decode(JsonValue value) {
 		if (value instanceof JsonNull) {
-			return DecodeResult.success(Optional.empty());
+			return CodecResult.success(Optional.empty());
 		} else {
 			return this.wrapped.decode(value).map(Optional::of);
 		}

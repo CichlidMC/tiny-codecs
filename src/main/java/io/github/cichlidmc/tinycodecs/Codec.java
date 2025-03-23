@@ -20,7 +20,7 @@ public interface Codec<T> {
 	 * An exception should never be thrown by this method.
 	 * @param value the JSON to decode. A JsonNull may indicate either a literal null or a missing field
 	 */
-	DecodeResult<T> decode(JsonValue value);
+	CodecResult<T> decode(JsonValue value);
 
 	/**
 	 * Encode the given value to JSON.
@@ -38,11 +38,11 @@ public interface Codec<T> {
 		return Codecs.map(this, function);
 	}
 
-	default Codec<T> mapResult(UnaryOperator<DecodeResult<T>> function) {
+	default Codec<T> mapResult(UnaryOperator<CodecResult<T>> function) {
 		return Codecs.mapResult(this, function);
 	}
 
-	default Codec<T> flatMap(Function<T, DecodeResult<T>> function) {
+	default Codec<T> flatMap(Function<T, CodecResult<T>> function) {
 		return Codecs.flatMap(this, function);
 	}
 
@@ -50,7 +50,7 @@ public interface Codec<T> {
 		return Codecs.xmap(this, aToB, bToA);
 	}
 
-	default <B> Codec<B> flatXmap(Function<T, DecodeResult<B>> aToB, Function<B, T> bToA) {
+	default <B> Codec<B> flatXmap(Function<T, CodecResult<B>> aToB, Function<B, T> bToA) {
 		return Codecs.flatXmap(this, aToB, bToA);
 	}
 

@@ -1,7 +1,7 @@
 package io.github.cichlidmc.tinycodecs.codec;
 
 import io.github.cichlidmc.tinycodecs.Codec;
-import io.github.cichlidmc.tinycodecs.DecodeResult;
+import io.github.cichlidmc.tinycodecs.CodecResult;
 import io.github.cichlidmc.tinyjson.value.JsonValue;
 import io.github.cichlidmc.tinyjson.value.composite.JsonArray;
 
@@ -17,14 +17,14 @@ public final class ListCodec<T> implements Codec<List<T>> {
 	}
 
 	@Override
-	public DecodeResult<List<T>> decode(JsonValue value) {
+	public CodecResult<List<T>> decode(JsonValue value) {
 		if (!(value instanceof JsonArray)) {
-			return DecodeResult.error("Not a list: " + value);
+			return CodecResult.error("Not a list: " + value);
 		}
 
 		JsonArray array = value.asArray();
 		if (array.size() == 0) {
-			return DecodeResult.success(Collections.emptyList());
+			return CodecResult.success(Collections.emptyList());
 		} else if (array.size() == 1) {
 			return this.elementCodec.decode(array.get(0)).map(Collections::singletonList);
 		}
@@ -39,12 +39,12 @@ public final class ListCodec<T> implements Codec<List<T>> {
 		}
 
 		if (errors.isEmpty()) {
-			return DecodeResult.success(decoded);
+			return CodecResult.success(decoded);
 		}
 
 		StringBuilder fullError = new StringBuilder("Failed to decode list: ");
 		errors.forEach(error -> fullError.append(error).append("; "));
-		return DecodeResult.error(fullError.toString().trim());
+		return CodecResult.error(fullError.toString().trim());
 	}
 
 	@Override

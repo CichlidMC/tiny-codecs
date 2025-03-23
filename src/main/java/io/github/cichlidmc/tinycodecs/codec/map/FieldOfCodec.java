@@ -1,7 +1,7 @@
 package io.github.cichlidmc.tinycodecs.codec.map;
 
 import io.github.cichlidmc.tinycodecs.Codec;
-import io.github.cichlidmc.tinycodecs.DecodeResult;
+import io.github.cichlidmc.tinycodecs.CodecResult;
 import io.github.cichlidmc.tinycodecs.MapCodec;
 import io.github.cichlidmc.tinycodecs.util.Utils;
 import io.github.cichlidmc.tinyjson.value.JsonValue;
@@ -18,7 +18,7 @@ public class FieldOfCodec<T> implements MapCodec<T> {
 	}
 
 	@Override
-	public DecodeResult<T> decode(JsonObject json) {
+	public CodecResult<T> decode(JsonObject json) {
 		JsonValue value = Utils.getOrJsonNull(json, this.name);
 		return this.wrapped.decode(value);
 	}

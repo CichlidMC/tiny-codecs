@@ -7,10 +7,10 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * A result of a decode attempt, either a success (has a value) or an error (has a message).
+ * A result of a codec operation, either a success (has a value) or an error (has a message).
  */
-public abstract class DecodeResult<T> {
-	private DecodeResult() {
+public abstract class CodecResult<T> {
+	private CodecResult() {
 	}
 
 	public abstract boolean isSuccess();
@@ -19,11 +19,11 @@ public abstract class DecodeResult<T> {
 		return !this.isSuccess();
 	}
 
-	public DecodeResult.Success<T> asSuccess() {
+	public CodecResult.Success<T> asSuccess() {
 		throw new UnsupportedOperationException();
 	}
 
-	public DecodeResult.Error<T> asError() {
+	public CodecResult.Error<T> asError() {
 		throw new UnsupportedOperationException();
 	}
 
@@ -35,23 +35,23 @@ public abstract class DecodeResult<T> {
 
 	public abstract Optional<T> asOptional();
 
-	public abstract DecodeResult<T> filter(Predicate<T> filter, String messageOnFail);
+	public abstract CodecResult<T> filter(Predicate<T> filter, String messageOnFail);
 
-	public abstract <B> DecodeResult<B> map(Function<T, B> function);
+	public abstract <B> CodecResult<B> map(Function<T, B> function);
 
-	public abstract <B> DecodeResult<B> flatMap(Function<T, DecodeResult<B>> function);
+	public abstract <B> CodecResult<B> flatMap(Function<T, CodecResult<B>> function);
 
 	public abstract void ifPresentOrElse(Consumer<T> success, Consumer<String> error);
 
-	public static <T> DecodeResult<T> success(T value) {
+	public static <T> CodecResult<T> success(T value) {
 		return new Success<>(value);
 	}
 
-	public static <T> DecodeResult<T> error(String message) {
+	public static <T> CodecResult<T> error(String message) {
 		return new Error<>(message);
 	}
 
-	public static class Success<T> extends DecodeResult<T> {
+	public static class Success<T> extends CodecResult<T> {
 		public final T value;
 
 		public Success(T value) {
@@ -79,17 +79,17 @@ public abstract class DecodeResult<T> {
 		}
 
 		@Override
-		public DecodeResult<T> filter(Predicate<T> filter, String messageOnFail) {
+		public CodecResult<T> filter(Predicate<T> filter, String messageOnFail) {
 			return filter.test(this.value) ? this : error(messageOnFail);
 		}
 
 		@Override
-		public <A> DecodeResult<A> map(Function<T, A> function) {
+		public <A> CodecResult<A> map(Function<T, A> function) {
 			return success(function.apply(this.value));
 		}
 
 		@Override
-		public <B> DecodeResult<B> flatMap(Function<T, DecodeResult<B>> function) {
+		public <B> CodecResult<B> flatMap(Function<T, CodecResult<B>> function) {
 			return function.apply(this.value);
 		}
 
@@ -99,7 +99,7 @@ public abstract class DecodeResult<T> {
 		}
 	}
 
-	public static class Error<T> extends DecodeResult<T> {
+	public static class Error<T> extends CodecResult<T> {
 		public final String message;
 
 		public Error(String message) {
@@ -127,17 +127,17 @@ public abstract class DecodeResult<T> {
 		}
 
 		@Override
-		public DecodeResult<T> filter(Predicate<T> filter, String messageOnFail) {
+		public CodecResult<T> filter(Predicate<T> filter, String messageOnFail) {
 			return this;
 		}
 
 		@Override
-		public <A> DecodeResult<A> map(Function<T, A> function) {
+		public <A> CodecResult<A> map(Function<T, A> function) {
 			return error(this.message);
 		}
 
 		@Override
-		public <B> DecodeResult<B> flatMap(Function<T, DecodeResult<B>> function) {
+		public <B> CodecResult<B> flatMap(Function<T, CodecResult<B>> function) {
 			return error(this.message);
 		}
 

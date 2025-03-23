@@ -1,7 +1,7 @@
 package io.github.cichlidmc.tinycodecs.codec.map;
 
 import io.github.cichlidmc.tinycodecs.Codec;
-import io.github.cichlidmc.tinycodecs.DecodeResult;
+import io.github.cichlidmc.tinycodecs.CodecResult;
 import io.github.cichlidmc.tinycodecs.MapCodec;
 import io.github.cichlidmc.tinyjson.value.JsonValue;
 import io.github.cichlidmc.tinyjson.value.composite.JsonObject;
@@ -14,11 +14,11 @@ public class MapCodecAsCodec<T> implements Codec<T> {
 	}
 
 	@Override
-	public DecodeResult<T> decode(JsonValue value) {
+	public CodecResult<T> decode(JsonValue value) {
 		if (value instanceof JsonObject) {
 			return this.mapCodec.decode(value.asObject());
 		} else {
-			return DecodeResult.error("Not an object");
+			return CodecResult.error("Not an object");
 		}
 	}
 

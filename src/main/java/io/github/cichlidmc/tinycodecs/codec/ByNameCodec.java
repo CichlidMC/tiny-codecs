@@ -1,7 +1,7 @@
 package io.github.cichlidmc.tinycodecs.codec;
 
 import io.github.cichlidmc.tinycodecs.Codec;
-import io.github.cichlidmc.tinycodecs.DecodeResult;
+import io.github.cichlidmc.tinycodecs.CodecResult;
 import io.github.cichlidmc.tinyjson.value.JsonValue;
 import io.github.cichlidmc.tinyjson.value.primitive.JsonString;
 
@@ -17,15 +17,15 @@ public final class ByNameCodec<T> implements Codec<T> {
 	}
 
 	@Override
-	public DecodeResult<T> decode(JsonValue value) {
+	public CodecResult<T> decode(JsonValue value) {
 		if (!(value instanceof JsonString)) {
-			return DecodeResult.error("Name is not a String");
+			return CodecResult.error("Name is not a String");
 		}
 
 		String name = value.asString().value();
 		T named = this.byName.apply(name);
 
-		return named != null ? DecodeResult.success(named) : DecodeResult.error("No entry named " + name);
+		return named != null ? CodecResult.success(named) : CodecResult.error("No entry named " + name);
 	}
 
 	@Override

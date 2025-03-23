@@ -1,22 +1,22 @@
 package io.github.cichlidmc.tinycodecs.test.types;
 
 import io.github.cichlidmc.tinycodecs.Codec;
+import io.github.cichlidmc.tinycodecs.CodecResult;
 import io.github.cichlidmc.tinycodecs.Codecs;
-import io.github.cichlidmc.tinycodecs.DecodeResult;
 import io.github.cichlidmc.tinycodecs.util.Either;
 
 import java.util.Arrays;
 
 public final class Vec3 {
 	public static final Codec<Vec3> INT_ARRAY_CODEC = Codecs.INT.listOf().flatXmap(
-			list -> list.size() != 3 ? DecodeResult.error("Wrong size") : DecodeResult.success(new Vec3(list.get(0), list.get(1), list.get(2))),
+			list -> list.size() != 3 ? CodecResult.error("Wrong size") : CodecResult.success(new Vec3(list.get(0), list.get(1), list.get(2))),
 			vec -> Arrays.asList(vec.x, vec.y, vec.z)
 	);
 	public static final Codec<Vec3> STRING_CODEC = Codecs.STRING.flatXmap(
 			string -> {
 				String[] split = string.split(",");
 				if (split.length != 3) {
-					return DecodeResult.error("Wrong size");
+					return CodecResult.error("Wrong size");
 				}
 
 				int[] ints = new int[3];
@@ -24,11 +24,11 @@ public final class Vec3 {
 					try {
 						ints[i] = Integer.parseInt(split[i]);
 					} catch (NumberFormatException e) {
-						return DecodeResult.error("not an int");
+						return CodecResult.error("not an int");
 					}
 				}
 
-				return DecodeResult.success(new Vec3(ints[0], ints[1], ints[2]));
+				return CodecResult.success(new Vec3(ints[0], ints[1], ints[2]));
 			},
 			vec -> vec.x + "," + vec.y + ',' + vec.z
 	);

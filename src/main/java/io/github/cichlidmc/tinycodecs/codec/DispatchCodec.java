@@ -1,7 +1,7 @@
 package io.github.cichlidmc.tinycodecs.codec;
 
 import io.github.cichlidmc.tinycodecs.Codec;
-import io.github.cichlidmc.tinycodecs.DecodeResult;
+import io.github.cichlidmc.tinycodecs.CodecResult;
 import io.github.cichlidmc.tinycodecs.MapCodec;
 import io.github.cichlidmc.tinycodecs.util.Utils;
 import io.github.cichlidmc.tinyjson.value.JsonValue;
@@ -25,17 +25,17 @@ public final class DispatchCodec<T, TYPE> implements Codec<T> {
 	}
 
 	@Override
-	public DecodeResult<T> decode(JsonValue value) {
+	public CodecResult<T> decode(JsonValue value) {
 		if (!(value instanceof JsonObject)) {
-			return DecodeResult.error("Cannot get key from non-object");
+			return CodecResult.error("Cannot get key from non-object");
 		}
 
 		JsonObject object = value.asObject();
 
 		JsonValue typeValue = Utils.getOrJsonNull(object, this.key);
-		DecodeResult<TYPE> typeResult = this.typeCodec.decode(typeValue);
+		CodecResult<TYPE> typeResult = this.typeCodec.decode(typeValue);
 		if (typeResult.isError()) {
-			return DecodeResult.error("Could not decode type: " + typeResult.asError().message);
+			return CodecResult.error("Could not decode type: " + typeResult.asError().message);
 		}
 
 		TYPE type = typeResult.getOrThrow();

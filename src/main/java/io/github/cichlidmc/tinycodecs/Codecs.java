@@ -59,10 +59,10 @@ public interface Codecs {
 		};
 	}
 
-	static <T> Codec<T> simple(Function<JsonValue, DecodeResult<T>> decoder, Function<T, JsonValue> encoder) {
+	static <T> Codec<T> simple(Function<JsonValue, CodecResult<T>> decoder, Function<T, JsonValue> encoder) {
 		return new Codec<T>() {
 			@Override
-			public DecodeResult<T> decode(JsonValue value) {
+			public CodecResult<T> decode(JsonValue value) {
 				return decoder.apply(value);
 			}
 
@@ -111,11 +111,11 @@ public interface Codecs {
 		return simple(json -> codec.decode(json).map(function), codec::encode);
 	}
 
-	static <T> Codec<T> mapResult(Codec<T> codec, UnaryOperator<DecodeResult<T>> function) {
+	static <T> Codec<T> mapResult(Codec<T> codec, UnaryOperator<CodecResult<T>> function) {
 		return simple(json -> function.apply(codec.decode(json)), codec::encode);
 	}
 
-	static <T> Codec<T> flatMap(Codec<T> codec, Function<T, DecodeResult<T>> function) {
+	static <T> Codec<T> flatMap(Codec<T> codec, Function<T, CodecResult<T>> function) {
 		return mapResult(codec, result -> result.flatMap(function));
 	}
 
@@ -123,7 +123,7 @@ public interface Codecs {
 		return simple(json -> codec.decode(json).map(aToB), b -> codec.encode(bToA.apply(b)));
 	}
 
-	static <A, B> Codec<B> flatXmap(Codec<A> codec, Function<A, DecodeResult<B>> aToB, Function<B, A> bToA) {
+	static <A, B> Codec<B> flatXmap(Codec<A> codec, Function<A, CodecResult<B>> aToB, Function<B, A> bToA) {
 		return simple(json -> codec.decode(json).flatMap(aToB), b -> codec.encode(bToA.apply(b)));
 	}
 

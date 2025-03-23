@@ -1,7 +1,7 @@
 package io.github.cichlidmc.tinycodecs.codec;
 
 import io.github.cichlidmc.tinycodecs.Codec;
-import io.github.cichlidmc.tinycodecs.DecodeResult;
+import io.github.cichlidmc.tinycodecs.CodecResult;
 import io.github.cichlidmc.tinyjson.value.JsonValue;
 import io.github.cichlidmc.tinyjson.value.primitive.JsonNull;
 
@@ -13,8 +13,8 @@ public final class UnitCodec<T> implements Codec<T> {
 	}
 
 	@Override
-	public DecodeResult<T> decode(JsonValue value) {
-		return DecodeResult.success(this.unit);
+	public CodecResult<T> decode(JsonValue value) {
+		return CodecResult.success(this.unit);
 	}
 
 	@Override

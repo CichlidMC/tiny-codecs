@@ -1,7 +1,7 @@
 package io.github.cichlidmc.tinycodecs.codec;
 
 import io.github.cichlidmc.tinycodecs.Codec;
-import io.github.cichlidmc.tinycodecs.DecodeResult;
+import io.github.cichlidmc.tinycodecs.CodecResult;
 import io.github.cichlidmc.tinyjson.value.JsonValue;
 
 public final class AlternativeCodec<T> implements Codec<T> {
@@ -14,19 +14,19 @@ public final class AlternativeCodec<T> implements Codec<T> {
 	}
 
 	@Override
-	public DecodeResult<T> decode(JsonValue value) {
-		DecodeResult<T> firstResult = this.first.decode(value);
+	public CodecResult<T> decode(JsonValue value) {
+		CodecResult<T> firstResult = this.first.decode(value);
 		if (firstResult.isSuccess())
 			return firstResult;
 
-		DecodeResult<T> secondResult = this.second.decode(value);
+		CodecResult<T> secondResult = this.second.decode(value);
 		if (secondResult.isSuccess())
 			return secondResult;
 
 		// both failed, merge errors
 		String firstMessage = firstResult.asError().message;
 		String secondMessage = secondResult.asError().message;
-		return DecodeResult.error("Both formats failed to decode: " + firstMessage + "; " + secondMessage);
+		return CodecResult.error("Both formats failed to decode: " + firstMessage + "; " + secondMessage);
 	}
 
 	@Override

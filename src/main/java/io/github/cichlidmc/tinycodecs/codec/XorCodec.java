@@ -1,7 +1,7 @@
 package io.github.cichlidmc.tinycodecs.codec;
 
 import io.github.cichlidmc.tinycodecs.Codec;
-import io.github.cichlidmc.tinycodecs.DecodeResult;
+import io.github.cichlidmc.tinycodecs.CodecResult;
 import io.github.cichlidmc.tinycodecs.util.Either;
 import io.github.cichlidmc.tinyjson.value.JsonValue;
 
@@ -15,12 +15,12 @@ public final class XorCodec<L, R> implements Codec<Either<L, R>> {
 	}
 
 	@Override
-	public DecodeResult<Either<L, R>> decode(JsonValue value) {
-		DecodeResult<L> leftResult = this.left.decode(value);
-		DecodeResult<R> rightResult = this.right.decode(value);
+	public CodecResult<Either<L, R>> decode(JsonValue value) {
+		CodecResult<L> leftResult = this.left.decode(value);
+		CodecResult<R> rightResult = this.right.decode(value);
 
 		if (leftResult.isSuccess() && rightResult.isSuccess()) {
-			return DecodeResult.error("Both formats were successful");
+			return CodecResult.error("Both formats were successful");
 		} else if (leftResult.isSuccess()) {
 			return leftResult.map(Either::left);
 		} else if (rightResult.isSuccess()) {
@@ -30,7 +30,7 @@ public final class XorCodec<L, R> implements Codec<Either<L, R>> {
 		// both failed, merge errors
 		String firstMessage = leftResult.asError().message;
 		String secondMessage = rightResult.asError().message;
-		return DecodeResult.error("Both formats failed to decode: " + firstMessage + "; " + secondMessage);
+		return CodecResult.error("Both formats failed to decode: " + firstMessage + "; " + secondMessage);
 	}
 
 	@Override

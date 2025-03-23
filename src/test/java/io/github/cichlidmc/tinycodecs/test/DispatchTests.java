@@ -1,12 +1,13 @@
 package io.github.cichlidmc.tinycodecs.test;
 
-import io.github.cichlidmc.tinycodecs.DecodeResult;
+import io.github.cichlidmc.tinycodecs.CodecResult;
 import io.github.cichlidmc.tinycodecs.test.types.Shape;
 import io.github.cichlidmc.tinyjson.value.JsonValue;
 import io.github.cichlidmc.tinyjson.value.composite.JsonObject;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 public class DispatchTests {
 	@Test
@@ -14,8 +15,8 @@ public class DispatchTests {
 		JsonObject json = new JsonObject()
 				.put("radius", 4);
 
-		DecodeResult<Shape> result = Shape.CODEC.decode(json);
-		assertInstanceOf(DecodeResult.Error.class, result);
+		CodecResult<Shape> result = Shape.CODEC.decode(json);
+		assertInstanceOf(CodecResult.Error.class, result);
 	}
 
 	@Test

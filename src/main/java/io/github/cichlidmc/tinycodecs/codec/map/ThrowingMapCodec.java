@@ -1,6 +1,6 @@
 package io.github.cichlidmc.tinycodecs.codec.map;
 
-import io.github.cichlidmc.tinycodecs.DecodeResult;
+import io.github.cichlidmc.tinycodecs.CodecResult;
 import io.github.cichlidmc.tinycodecs.MapCodec;
 import io.github.cichlidmc.tinyjson.JsonException;
 import io.github.cichlidmc.tinyjson.value.composite.JsonObject;
@@ -13,11 +13,11 @@ public interface ThrowingMapCodec<T> extends MapCodec<T> {
 	T decodeUnsafe(JsonObject json) throws JsonException;
 
 	@Override
-	default DecodeResult<T> decode(JsonObject json) {
+	default CodecResult<T> decode(JsonObject json) {
 		try {
-			return DecodeResult.success(this.decodeUnsafe(json));
+			return CodecResult.success(this.decodeUnsafe(json));
 		} catch (JsonException e) {
-			return DecodeResult.error(e.getMessage());
+			return CodecResult.error(e.getMessage());
 		}
 	}
 }

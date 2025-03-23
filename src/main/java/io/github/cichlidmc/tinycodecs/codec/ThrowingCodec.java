@@ -1,7 +1,7 @@
 package io.github.cichlidmc.tinycodecs.codec;
 
 import io.github.cichlidmc.tinycodecs.Codec;
-import io.github.cichlidmc.tinycodecs.DecodeResult;
+import io.github.cichlidmc.tinycodecs.CodecResult;
 import io.github.cichlidmc.tinyjson.JsonException;
 import io.github.cichlidmc.tinyjson.value.JsonValue;
 
@@ -13,11 +13,11 @@ public interface ThrowingCodec<T> extends Codec<T> {
 	T decodeUnsafe(JsonValue value) throws JsonException;
 
 	@Override
-	default DecodeResult<T> decode(JsonValue value) {
+	default CodecResult<T> decode(JsonValue value) {
 		try {
-			return DecodeResult.success(this.decodeUnsafe(value));
+			return CodecResult.success(this.decodeUnsafe(value));
 		} catch (JsonException e) {
-			return DecodeResult.error(e.getMessage());
+			return CodecResult.error(e.getMessage());
 		}
 	}
 }
