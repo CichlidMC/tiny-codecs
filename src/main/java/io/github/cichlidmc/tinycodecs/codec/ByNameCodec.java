@@ -9,10 +9,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Function;
 
 public final class ByNameCodec<T> implements Codec<T> {
-	private final Function<T, @Nullable String> nameGetter;
-	private final Function<String, @Nullable T> byName;
+	private final Function<? super T, @Nullable String> nameGetter;
+	private final Function<? super String, ? extends @Nullable T> byName;
 
-	public ByNameCodec(Function<T, @Nullable String> nameGetter, Function<String, @Nullable T> byName) {
+	public ByNameCodec(Function<? super T, @Nullable String> nameGetter, Function<? super String, ? extends @Nullable T> byName) {
 		this.nameGetter = nameGetter;
 		this.byName = byName;
 	}

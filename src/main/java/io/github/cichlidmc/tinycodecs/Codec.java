@@ -54,7 +54,7 @@ public interface Codec<T> {
 		return Codecs.flatXmap(this, aToB, bToA);
 	}
 
-	default <B> Codec<B> dispatch(String key, Function<? super B, ? extends T> typeGetter, Function<? super T, MapCodec<? extends B>> codecGetter) {
+	default <B> Codec<B> dispatch(String key, Function<? super B, ? extends T> typeGetter, Function<? super T, ? extends MapCodec<? extends B>> codecGetter) {
 		return Codecs.dispatch(this, key, typeGetter, codecGetter);
 	}
 

@@ -21,9 +21,9 @@ import java.util.function.Function;
 public final class CompositeCodec {
 	private CompositeCodec() {}
 
-	public static <T, A, B> MapCodec<T> of(MapCodec<A> aCodec, F1<T, A> aGetter,
-										   MapCodec<B> bCodec, F1<T, B> bGetter,
-										   F2<A, B, T> factory) {
+	public static <T, A, B> MapCodec<T> of(MapCodec<A> aCodec, F1<? super T, ? extends A> aGetter,
+										   MapCodec<B> bCodec, F1<? super T, ? extends B> bGetter,
+										   F2<? super A, ? super B, ? extends T> factory) {
 		return create(json -> {
 			A a = decodeField(json, aCodec);
 			B b = decodeField(json, bCodec);
@@ -34,10 +34,10 @@ public final class CompositeCodec {
 		});
 	}
 
-	public static <T, A, B, C> MapCodec<T> of(MapCodec<A> aCodec, F1<T, A> aGetter,
-											  MapCodec<B> bCodec, F1<T, B> bGetter,
-											  MapCodec<C> cCodec, F1<T, C> cGetter,
-											  F3<A, B, C, T> factory) {
+	public static <T, A, B, C> MapCodec<T> of(MapCodec<A> aCodec, F1<? super T, ? extends A> aGetter,
+											  MapCodec<B> bCodec, F1<? super T, ? extends B> bGetter,
+											  MapCodec<C> cCodec, F1<? super T, ? extends C> cGetter,
+											  F3<? super A, ? super B, ? super C, ? extends T> factory) {
 		return create(json -> {
 			A a = decodeField(json, aCodec);
 			B b = decodeField(json, bCodec);
@@ -50,11 +50,11 @@ public final class CompositeCodec {
 		});
 	}
 
-	public static <T, A, B, C, D> MapCodec<T> of(MapCodec<A> aCodec, F1<T, A> aGetter,
-												 MapCodec<B> bCodec, F1<T, B> bGetter,
-												 MapCodec<C> cCodec, F1<T, C> cGetter,
-												 MapCodec<D> dCodec, F1<T, D> dGetter,
-												 F4<A, B, C, D, T> factory) {
+	public static <T, A, B, C, D> MapCodec<T> of(MapCodec<A> aCodec, F1<? super T, ? extends A> aGetter,
+												 MapCodec<B> bCodec, F1<? super T, ? extends B> bGetter,
+												 MapCodec<C> cCodec, F1<? super T, ? extends C> cGetter,
+												 MapCodec<D> dCodec, F1<? super T, ? extends D> dGetter,
+												 F4<? super A, ? super B, ? super C, ? super D, ? extends T> factory) {
 		return create(json -> {
 			A a = decodeField(json, aCodec);
 			B b = decodeField(json, bCodec);
@@ -69,12 +69,12 @@ public final class CompositeCodec {
 		});
 	}
 
-	public static <T, A, B, C, D, E> MapCodec<T> of(MapCodec<A> aCodec, F1<T, A> aGetter,
-													MapCodec<B> bCodec, F1<T, B> bGetter,
-													MapCodec<C> cCodec, F1<T, C> cGetter,
-													MapCodec<D> dCodec, F1<T, D> dGetter,
-													MapCodec<E> eCodec, F1<T, E> eGetter,
-													F5<A, B, C, D, E, T> factory) {
+	public static <T, A, B, C, D, E> MapCodec<T> of(MapCodec<A> aCodec, F1<? super T, ? extends A> aGetter,
+													MapCodec<B> bCodec, F1<? super T, ? extends B> bGetter,
+													MapCodec<C> cCodec, F1<? super T, ? extends C> cGetter,
+													MapCodec<D> dCodec, F1<? super T, ? extends D> dGetter,
+													MapCodec<E> eCodec, F1<? super T, ? extends E> eGetter,
+													F5<? super A, ? super B, ? super C, ? super D, ? super E, ? extends T> factory) {
 		return create(json -> {
 			A a = decodeField(json, aCodec);
 			B b = decodeField(json, bCodec);
@@ -91,13 +91,13 @@ public final class CompositeCodec {
 		});
 	}
 
-	public static <T, A, B, C, D, E, F> MapCodec<T> of(MapCodec<A> aCodec, F1<T, A> aGetter,
-													   MapCodec<B> bCodec, F1<T, B> bGetter,
-													   MapCodec<C> cCodec, F1<T, C> cGetter,
-													   MapCodec<D> dCodec, F1<T, D> dGetter,
-													   MapCodec<E> eCodec, F1<T, E> eGetter,
-													   MapCodec<F> fCodec, F1<T, F> fGetter,
-													   F6<A, B, C, D, E, F, T> factory) {
+	public static <T, A, B, C, D, E, F> MapCodec<T> of(MapCodec<A> aCodec, F1<? super T, ? extends A> aGetter,
+													   MapCodec<B> bCodec, F1<? super T, ? extends B> bGetter,
+													   MapCodec<C> cCodec, F1<? super T, ? extends C> cGetter,
+													   MapCodec<D> dCodec, F1<? super T, ? extends D> dGetter,
+													   MapCodec<E> eCodec, F1<? super T, ? extends E> eGetter,
+													   MapCodec<F> fCodec, F1<? super T, ? extends F> fGetter,
+													   F6<? super A, ? super B, ? super C, ? super D, ? super E, ? super F, ? extends T> factory) {
 		return create(json -> {
 			A a = decodeField(json, aCodec);
 			B b = decodeField(json, bCodec);
@@ -116,7 +116,7 @@ public final class CompositeCodec {
 		});
 	}
 
-	private static <T> MapCodec<T> create(Function<JsonObject, T> decoder, BiConsumer<JsonObject, T> encoder) {
+	private static <T> MapCodec<T> create(Function<? super JsonObject, ? extends T> decoder, BiConsumer<? super JsonObject, ? super T> encoder) {
 		return new ThrowingMapCodec<T>() {
 			@Override
 			public T decodeUnsafe(JsonObject json) throws JsonException {
@@ -131,7 +131,7 @@ public final class CompositeCodec {
 		};
 	}
 
-	private static <T, F> void encodeField(JsonObject json, MapCodec<F> codec, F1<T, F> getter, T owner) {
+	private static <T, F> void encodeField(JsonObject json, MapCodec<? super F> codec, F1<T, F> getter, T owner) {
 		codec.encode(json, getter.apply(owner));
 	}
 

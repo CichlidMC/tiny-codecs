@@ -21,7 +21,7 @@ public interface Either<L, R> {
 		throw new NoSuchElementException();
 	}
 
-	<L2, R2> Either<L2, R2> map(Function<L, L2> left, Function<R, R2> right);
+	<L2, R2> Either<L2, R2> map(Function<? super L, ? extends L2> left, Function<? super R, ? extends R2> right);
 
 	static <L, R> Either<L, R> left(L value) {
 		return new Left<>(value);
@@ -52,8 +52,7 @@ public interface Either<L, R> {
 			return this.value;
 		}
 
-		@Override
-		public <L2, R2> Either<L2, R2> map(Function<L, L2> left, Function<R, R2> right) {
+		public <L2, R2> Either<L2, R2> map(Function<? super L, ? extends L2> left, Function<? super R, ? extends R2> right) {
 			return Either.left(left.apply(this.value));
 		}
 	}
@@ -75,8 +74,7 @@ public interface Either<L, R> {
 			return this.value;
 		}
 
-		@Override
-		public <L2, R2> Either<L2, R2> map(Function<L, L2> left, Function<R, R2> right) {
+		public <L2, R2> Either<L2, R2> map(Function<? super L, ? extends L2> left, Function<? super R, ? extends R2> right) {
 			return Either.right(right.apply(this.value));
 		}
 	}

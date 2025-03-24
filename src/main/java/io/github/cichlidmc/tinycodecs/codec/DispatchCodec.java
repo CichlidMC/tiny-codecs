@@ -13,11 +13,11 @@ public final class DispatchCodec<T, TYPE> implements Codec<T> {
 	private final String key;
 	private final Codec<TYPE> typeCodec;
 	private final Function<? super T, ? extends TYPE> typeGetter;
-	private final Function<? super TYPE, MapCodec<? extends T>> codecGetter;
+	private final Function<? super TYPE, ? extends MapCodec<? extends T>> codecGetter;
 
 	public DispatchCodec(Codec<TYPE> codec, String key,
 						 Function<? super T, ? extends TYPE> typeGetter,
-						 Function<? super TYPE, MapCodec<? extends T>> codecGetter) {
+						 Function<? super TYPE, ? extends MapCodec<? extends T>> codecGetter) {
 		this.key = key;
 		this.typeCodec = codec;
 		this.typeGetter = typeGetter;

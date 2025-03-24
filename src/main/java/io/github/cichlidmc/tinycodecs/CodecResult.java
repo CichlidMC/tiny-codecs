@@ -31,17 +31,17 @@ public abstract class CodecResult<T> {
 		return this.getOrThrow(error -> new NoSuchElementException("Failed to decode: " + error));
 	}
 
-	public abstract <X extends Throwable> T getOrThrow(Function<String, X> exceptionFactory) throws X;
+	public abstract <X extends Throwable> T getOrThrow(Function<? super String, X> exceptionFactory) throws X;
 
 	public abstract Optional<T> asOptional();
 
-	public abstract CodecResult<T> filter(Predicate<T> filter, String messageOnFail);
+	public abstract CodecResult<T> filter(Predicate<? super T> filter, String messageOnFail);
 
 	public abstract <B> CodecResult<B> map(Function<? super T, ? extends B> function);
 
-	public abstract <B> CodecResult<B> flatMap(Function<T, CodecResult<B>> function);
+	public abstract <B> CodecResult<B> flatMap(Function<? super T, ? extends CodecResult<B>> function);
 
-	public abstract void ifPresentOrElse(Consumer<T> success, Consumer<String> error);
+	public abstract void ifPresentOrElse(Consumer<? super T> success, Consumer<? super String> error);
 
 	public static <T> CodecResult<T> success(T value) {
 		return new Success<>(value);
@@ -69,7 +69,7 @@ public abstract class CodecResult<T> {
 		}
 
 		@Override
-		public <X extends Throwable> T getOrThrow(Function<String, X> exceptionFactory) throws X {
+		public <X extends Throwable> T getOrThrow(Function<? super String, X> exceptionFactory) throws X {
 			return this.value;
 		}
 
@@ -79,7 +79,7 @@ public abstract class CodecResult<T> {
 		}
 
 		@Override
-		public CodecResult<T> filter(Predicate<T> filter, String messageOnFail) {
+		public CodecResult<T> filter(Predicate<? super T> filter, String messageOnFail) {
 			return filter.test(this.value) ? this : error(messageOnFail);
 		}
 
@@ -88,13 +88,12 @@ public abstract class CodecResult<T> {
 			return success(function.apply(this.value));
 		}
 
-		@Override
-		public <B> CodecResult<B> flatMap(Function<T, CodecResult<B>> function) {
+		public <B> CodecResult<B> flatMap(Function<? super T, ? extends CodecResult<B>> function) {
 			return function.apply(this.value);
 		}
 
 		@Override
-		public void ifPresentOrElse(Consumer<T> success, Consumer<String> error) {
+		public void ifPresentOrElse(Consumer<? super T> success, Consumer<? super String> error) {
 			success.accept(this.value);
 		}
 	}
@@ -117,7 +116,7 @@ public abstract class CodecResult<T> {
 		}
 
 		@Override
-		public <X extends Throwable> T getOrThrow(Function<String, X> exceptionFactory) throws X {
+		public <X extends Throwable> T getOrThrow(Function<? super String, X> exceptionFactory) throws X {
 			throw exceptionFactory.apply(this.message);
 		}
 
@@ -127,7 +126,7 @@ public abstract class CodecResult<T> {
 		}
 
 		@Override
-		public CodecResult<T> filter(Predicate<T> filter, String messageOnFail) {
+		public CodecResult<T> filter(Predicate<? super T> filter, String messageOnFail) {
 			return this;
 		}
 
@@ -137,12 +136,12 @@ public abstract class CodecResult<T> {
 		}
 
 		@Override
-		public <B> CodecResult<B> flatMap(Function<T, CodecResult<B>> function) {
+		public <B> CodecResult<B> flatMap(Function<? super T, ? extends CodecResult<B>> function) {
 			return this.cast();
 		}
 
 		@Override
-		public void ifPresentOrElse(Consumer<T> success, Consumer<String> error) {
+		public void ifPresentOrElse(Consumer<? super T> success, Consumer<? super String> error) {
 			error.accept(this.message);
 		}
 

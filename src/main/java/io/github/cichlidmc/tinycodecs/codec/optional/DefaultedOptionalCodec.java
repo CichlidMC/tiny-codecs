@@ -9,11 +9,11 @@ import java.util.function.Supplier;
 
 public final class DefaultedOptionalCodec<T> implements Codec<T> {
 	private final Codec<T> wrapped;
-	private final Supplier<T> fallback;
+	private final Supplier<? extends T> fallback;
 	// keep one for comparisons
 	private final T cached;
 
-	public DefaultedOptionalCodec(Codec<T> wrapped, Supplier<T> fallback) {
+	public DefaultedOptionalCodec(Codec<T> wrapped, Supplier<? extends T> fallback) {
 		this.wrapped = wrapped;
 		this.fallback = fallback;
 		this.cached = fallback.get();

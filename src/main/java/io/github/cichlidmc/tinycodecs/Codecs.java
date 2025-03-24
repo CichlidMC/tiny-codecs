@@ -46,7 +46,7 @@ public interface Codecs {
 
 	// factories
 
-	static <T> Codec<T> simpleThrowing(Function<JsonValue, T> decoder, Function<T, JsonValue> encoder) {
+	static <T> Codec<T> simpleThrowing(Function<? super JsonValue, ? extends T> decoder, Function<? super T, ? extends JsonValue> encoder) {
 		return new ThrowingCodec<T>() {
 			@Override
 			public T decodeUnsafe(JsonValue value) {
@@ -60,7 +60,7 @@ public interface Codecs {
 		};
 	}
 
-	static <T> Codec<T> simple(Function<JsonValue, CodecResult<T>> decoder, Function<T, CodecResult<? extends JsonValue>> encoder) {
+	static <T> Codec<T> simple(Function<? super JsonValue, ? extends CodecResult<T>> decoder, Function<? super T, ? extends CodecResult<? extends JsonValue>> encoder) {
 		return new Codec<T>() {
 			@Override
 			public CodecResult<T> decode(JsonValue value) {
@@ -81,7 +81,7 @@ public interface Codecs {
 		);
 	}
 
-	static <T> Codec<T> byName(Function<T, @Nullable String> nameGetter, Function<String, @Nullable T> byName) {
+	static <T> Codec<T> byName(Function<? super T, @Nullable String> nameGetter, Function<? super String, ? extends @Nullable T> byName) {
 		return new ByNameCodec<>(nameGetter, byName);
 	}
 
@@ -130,7 +130,7 @@ public interface Codecs {
 
 	static <A, B> Codec<B> dispatch(Codec<A> codec, String key,
 									Function<? super B, ? extends A> typeGetter,
-									Function<? super A, MapCodec<? extends B>> codecGetter) {
+									Function<? super A, ? extends MapCodec<? extends B>> codecGetter) {
 		return new DispatchCodec<>(codec, key, typeGetter, codecGetter);
 	}
 
@@ -156,7 +156,7 @@ public interface Codecs {
 		return new OptionalCodec<>(codec);
 	}
 
-	static <T> Codec<T> optional(Codec<T> codec, Supplier<T> fallback) {
+	static <T> Codec<T> optional(Codec<T> codec, Supplier<? extends T> fallback) {
 		return new DefaultedOptionalCodec<>(codec, fallback);
 	}
 
