@@ -45,14 +45,24 @@ public final class DispatchCodec<T, TYPE> implements Codec<T> {
 	}
 
 	@Override
-	public JsonValue encode(T value) {
+	public CodecResult<? extends JsonValue> encode(T value) {
 		TYPE type = this.typeGetter.apply(value);
-		//noinspection unchecked
-		MapCodec<T> codec = (MapCodec<T>) this.codecGetter.apply(type);
+
+		CodecResult<? extends JsonValue> typeResult = this.typeCodec.encode(type);
+		if (typeResult.isError()) {
+			return CodecResult.error("Failed to encode type: " + typeResult.asError().message);
+		}
+
+		MapCodec<T> codec = this.getCodec(type);
 
 		JsonObject json = new JsonObject();
-		json.put(this.key, this.typeCodec.encode(type));
+		json.put(this.key, typeResult.getOrThrow());
 		codec.encode(json, value);
-		return json;
+		return CodecResult.success(json);
+	}
+
+	@SuppressWarnings("unchecked")
+	private MapCodec<T> getCodec(TYPE type) {
+		return (MapCodec<T>) this.codecGetter.apply(type);
 	}
 }

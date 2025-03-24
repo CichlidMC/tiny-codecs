@@ -1,7 +1,13 @@
 package io.github.cichlidmc.tinycodecs.codec.map;
 
+import io.github.cichlidmc.tinycodecs.CodecResult;
 import io.github.cichlidmc.tinycodecs.MapCodec;
-import io.github.cichlidmc.tinycodecs.util.Functions.*;
+import io.github.cichlidmc.tinycodecs.util.Functions.F1;
+import io.github.cichlidmc.tinycodecs.util.Functions.F2;
+import io.github.cichlidmc.tinycodecs.util.Functions.F3;
+import io.github.cichlidmc.tinycodecs.util.Functions.F4;
+import io.github.cichlidmc.tinycodecs.util.Functions.F5;
+import io.github.cichlidmc.tinycodecs.util.Functions.F6;
 import io.github.cichlidmc.tinyjson.JsonException;
 import io.github.cichlidmc.tinyjson.value.composite.JsonObject;
 
@@ -118,8 +124,9 @@ public final class CompositeCodec {
 			}
 
 			@Override
-			public void encode(JsonObject json, T value) {
+			public CodecResult<JsonObject> encode(JsonObject json, T value) {
 				encoder.accept(json, value);
+				return CodecResult.success(json);
 			}
 		};
 	}

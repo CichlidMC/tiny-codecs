@@ -48,9 +48,17 @@ public final class ListCodec<T> implements Codec<List<T>> {
 	}
 
 	@Override
-	public JsonValue encode(List<T> value) {
+	public CodecResult<? extends JsonValue> encode(List<T> value) {
 		JsonArray array = new JsonArray();
-		value.forEach(entry -> array.add(this.elementCodec.encode(entry)));
-		return array;
+		for (T entry : value) {
+			CodecResult<? extends JsonValue> result = this.elementCodec.encode(entry);
+			if (result.isError()) {
+				return CodecResult.error("Failed to encode entry: " + result.asError().message);
+			}
+
+			array.add(result.getOrThrow());
+		}
+
+		return CodecResult.success(array);
 	}
 }

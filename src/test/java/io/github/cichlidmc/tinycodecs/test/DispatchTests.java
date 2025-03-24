@@ -37,7 +37,7 @@ public class DispatchTests {
 				.put("height", 2);
 
 		Shape shape = new Shape.Triangle(1, 2);
-		JsonValue actual = Shape.CODEC.encode(shape);
+		JsonValue actual = Shape.CODEC.encode(shape).getOrThrow();
 		assertEquals(expected, actual);
 	}
 }

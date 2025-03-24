@@ -24,7 +24,11 @@ public final class OptionalCodec<T> implements Codec<Optional<T>> {
 	}
 
 	@Override
-	public JsonValue encode(Optional<T> value) {
-		return value.map(this.wrapped::encode).orElseGet(JsonNull::new);
+	public CodecResult<? extends JsonValue> encode(Optional<T> value) {
+		if (value.isPresent()) {
+			return this.wrapped.encode(value.get());
+		} else {
+			return CodecResult.success(new JsonNull());
+		}
 	}
 }

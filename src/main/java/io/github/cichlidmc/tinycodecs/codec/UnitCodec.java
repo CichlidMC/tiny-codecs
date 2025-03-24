@@ -18,7 +18,7 @@ public final class UnitCodec<T> implements Codec<T> {
 	}
 
 	@Override
-	public JsonValue encode(T value) {
-		return new JsonNull();
+	public CodecResult<? extends JsonValue> encode(T value) {
+		return CodecResult.success(new JsonNull());
 	}
 }

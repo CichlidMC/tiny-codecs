@@ -1,6 +1,5 @@
 package io.github.cichlidmc.tinycodecs;
 
-import io.github.cichlidmc.tinycodecs.codec.AlternativeCodec;
 import io.github.cichlidmc.tinycodecs.codec.ByNameCodec;
 import io.github.cichlidmc.tinycodecs.codec.DispatchCodec;
 import io.github.cichlidmc.tinycodecs.codec.ListCodec;
@@ -17,6 +16,7 @@ import io.github.cichlidmc.tinyjson.value.JsonValue;
 import io.github.cichlidmc.tinyjson.value.primitive.JsonBool;
 import io.github.cichlidmc.tinyjson.value.primitive.JsonNumber;
 import io.github.cichlidmc.tinyjson.value.primitive.JsonString;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,6 +38,7 @@ public interface Codecs {
 	Codec<Boolean> BOOL = simpleThrowing(json -> json.asBoolean().value(), JsonBool::new);
 	Codec<String> STRING = simpleThrowing(json -> json.asString().value(), JsonString::new);
 	Codec<Byte> BYTE = number(Number::byteValue);
+	Codec<Short> SHORT = number(Number::shortValue);
 	Codec<Integer> INT = number(Number::intValue);
 	Codec<Long> LONG = number(Number::longValue);
 	Codec<Float> FLOAT = number(Number::floatValue);
@@ -53,13 +54,13 @@ public interface Codecs {
 			}
 
 			@Override
-			public JsonValue encode(T value) {
-				return encoder.apply(value);
+			public CodecResult<? extends JsonValue> encode(T value) {
+				return CodecResult.success(encoder.apply(value));
 			}
 		};
 	}
 
-	static <T> Codec<T> simple(Function<JsonValue, CodecResult<T>> decoder, Function<T, JsonValue> encoder) {
+	static <T> Codec<T> simple(Function<JsonValue, CodecResult<T>> decoder, Function<T, CodecResult<? extends JsonValue>> encoder) {
 		return new Codec<T>() {
 			@Override
 			public CodecResult<T> decode(JsonValue value) {
@@ -67,7 +68,7 @@ public interface Codecs {
 			}
 
 			@Override
-			public JsonValue encode(T value) {
+			public CodecResult<? extends JsonValue> encode(T value) {
 				return encoder.apply(value);
 			}
 		};
@@ -80,7 +81,7 @@ public interface Codecs {
 		);
 	}
 
-	static <T> Codec<T> byName(Function<T, String> nameGetter, Function<String, T> byName) {
+	static <T> Codec<T> byName(Function<T, @Nullable String> nameGetter, Function<String, @Nullable T> byName) {
 		return new ByNameCodec<>(nameGetter, byName);
 	}
 
@@ -119,7 +120,7 @@ public interface Codecs {
 		return mapResult(codec, result -> result.flatMap(function));
 	}
 
-	static <A, B> Codec<B> xmap(Codec<A> codec, Function<A, B> aToB, Function<B, A> bToA) {
+	static <A, B> Codec<B> xmap(Codec<A> codec, Function<? super A, ? extends B> aToB, Function<? super B, ? extends A> bToA) {
 		return simple(json -> codec.decode(json).map(aToB), b -> codec.encode(bToA.apply(b)));
 	}
 
@@ -138,8 +139,8 @@ public interface Codecs {
 		return dispatch(codec, "type", typeGetter, codecGetter);
 	}
 
-	static <T> Codec<T> withAlternative(Codec<T> first, Codec<T> second) {
-		return new AlternativeCodec<>(first, second);
+	static <T> Codec<T> withAlternative(Codec<T> first, Codec<? extends T> second) {
+		return xor(first, second).xmap(Either::merge, Either::left);
 	}
 
 	static <T> Codec<List<T>> listOf(Codec<T> elementCodec) {

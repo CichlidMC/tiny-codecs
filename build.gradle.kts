@@ -13,6 +13,7 @@ repositories {
 }
 
 dependencies {
+    compileOnlyApi("org.jetbrains:annotations:24.1.0")
     api("io.github.cichlidmc:TinyJson:1.0.1")
 
     testImplementation(platform("org.junit:junit-bom:5.10.0"))

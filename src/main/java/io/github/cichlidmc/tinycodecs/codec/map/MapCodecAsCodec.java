@@ -23,9 +23,8 @@ public class MapCodecAsCodec<T> implements Codec<T> {
 	}
 
 	@Override
-	public JsonValue encode(T value) {
+	public CodecResult<? extends JsonValue> encode(T value) {
 		JsonObject json = new JsonObject();
-		this.mapCodec.encode(json, value);
-		return json;
+		return this.mapCodec.encode(json, value);
 	}
 }

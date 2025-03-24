@@ -24,10 +24,17 @@ public class FieldOfCodec<T> implements MapCodec<T> {
 	}
 
 	@Override
-	public void encode(JsonObject json, T value) {
-		JsonValue encoded = this.wrapped.encode(value);
+	public CodecResult<JsonObject> encode(JsonObject json, T value) {
+		CodecResult<? extends JsonValue> result = this.wrapped.encode(value);
+		if (result.isError()) {
+			return result.asError().cast();
+		}
+
+		JsonValue encoded = result.getOrThrow();
 		if (!(encoded instanceof JsonNull)) {
 			json.put(this.name, encoded);
 		}
+
+		return CodecResult.success(json);
 	}
 }

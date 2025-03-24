@@ -29,9 +29,9 @@ public final class DefaultedOptionalCodec<T> implements Codec<T> {
 	}
 
 	@Override
-	public JsonValue encode(T value) {
+	public CodecResult<? extends JsonValue> encode(T value) {
 		if (value.equals(this.cached)) {
-			return new JsonNull();
+			return CodecResult.success(new JsonNull());
 		} else {
 			return this.wrapped.encode(value);
 		}

@@ -4,14 +4,15 @@ import io.github.cichlidmc.tinycodecs.Codec;
 import io.github.cichlidmc.tinycodecs.CodecResult;
 import io.github.cichlidmc.tinyjson.value.JsonValue;
 import io.github.cichlidmc.tinyjson.value.primitive.JsonString;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
 public final class ByNameCodec<T> implements Codec<T> {
-	private final Function<T, String> nameGetter;
-	private final Function<String, T> byName;
+	private final Function<T, @Nullable String> nameGetter;
+	private final Function<String, @Nullable T> byName;
 
-	public ByNameCodec(Function<T, String> nameGetter, Function<String, T> byName) {
+	public ByNameCodec(Function<T, @Nullable String> nameGetter, Function<String, @Nullable T> byName) {
 		this.nameGetter = nameGetter;
 		this.byName = byName;
 	}
@@ -29,8 +30,8 @@ public final class ByNameCodec<T> implements Codec<T> {
 	}
 
 	@Override
-	public JsonValue encode(T value) {
+	public CodecResult<? extends JsonValue> encode(T value) {
 		String name = this.nameGetter.apply(value);
-		return new JsonString(name);
+		return name != null ? CodecResult.success(new JsonString(name)) : CodecResult.error("Unknown name for entry " + value);
 	}
 }

@@ -37,7 +37,7 @@ public abstract class CodecResult<T> {
 
 	public abstract CodecResult<T> filter(Predicate<T> filter, String messageOnFail);
 
-	public abstract <B> CodecResult<B> map(Function<T, B> function);
+	public abstract <B> CodecResult<B> map(Function<? super T, ? extends B> function);
 
 	public abstract <B> CodecResult<B> flatMap(Function<T, CodecResult<B>> function);
 
@@ -84,7 +84,7 @@ public abstract class CodecResult<T> {
 		}
 
 		@Override
-		public <A> CodecResult<A> map(Function<T, A> function) {
+		public <B> CodecResult<B> map(Function<? super T, ? extends B> function) {
 			return success(function.apply(this.value));
 		}
 
@@ -132,18 +132,23 @@ public abstract class CodecResult<T> {
 		}
 
 		@Override
-		public <A> CodecResult<A> map(Function<T, A> function) {
-			return error(this.message);
+		public <B> CodecResult<B> map(Function<? super T, ? extends B> function) {
+			return this.cast();
 		}
 
 		@Override
 		public <B> CodecResult<B> flatMap(Function<T, CodecResult<B>> function) {
-			return error(this.message);
+			return this.cast();
 		}
 
 		@Override
 		public void ifPresentOrElse(Consumer<T> success, Consumer<String> error) {
 			error.accept(this.message);
+		}
+
+		@SuppressWarnings("unchecked")
+		public  <B> Error<B> cast() {
+			return (Error<B>) this;
 		}
 	}
 }

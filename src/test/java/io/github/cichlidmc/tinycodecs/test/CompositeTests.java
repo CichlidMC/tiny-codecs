@@ -5,13 +5,13 @@ import io.github.cichlidmc.tinyjson.value.JsonValue;
 import io.github.cichlidmc.tinyjson.value.composite.JsonObject;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CompositeTests {
 	@Test
 	public void testRecord() {
 		TestRecord record = new TestRecord(4, "test", false);
-		JsonValue json = TestRecord.CODEC.encode(record);
+		JsonValue json = TestRecord.CODEC.encode(record).getOrThrow();
 
 		JsonObject expected = new JsonObject()
 				.put("i", 4)

@@ -31,7 +31,7 @@ public interface Either<L, R> {
 		return new Right<>(value);
 	}
 
-	static <T> T merge(Either<T, T> either) {
+	static <T> T merge(Either<? extends T, ? extends T> either) {
 		return either.isLeft() ? either.left() : either.right();
 	}
 

@@ -34,7 +34,7 @@ public final class XorCodec<L, R> implements Codec<Either<L, R>> {
 	}
 
 	@Override
-	public JsonValue encode(Either<L, R> value) {
+	public CodecResult<? extends JsonValue> encode(Either<L, R> value) {
 		return Either.merge(value.map(this.left::encode, this.right::encode));
 	}
 }

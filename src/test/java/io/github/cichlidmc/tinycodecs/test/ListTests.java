@@ -10,13 +10,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ListTests {
 	@Test
 	public void emptyList() {
 		List<TestRecord> list = Collections.emptyList();
-		JsonValue encoded = TestRecord.LIST_CODEC.encode(list);
+		JsonValue encoded = TestRecord.LIST_CODEC.encode(list).getOrThrow();
 
 		assertEquals(new JsonArray(), encoded);
 
@@ -39,7 +39,7 @@ public class ListTests {
 
 		List<TestRecord> decoded = TestRecord.LIST_CODEC.decode(array).getOrThrow();
 		assertEquals(expected, decoded);
-		assertEquals(array, TestRecord.LIST_CODEC.encode(decoded));
+		assertEquals(array, TestRecord.LIST_CODEC.encode(decoded).getOrThrow());
 	}
 
 	@Test
@@ -60,6 +60,6 @@ public class ListTests {
 
 		List<TestRecord> decoded = TestRecord.LIST_CODEC.decode(array).getOrThrow();
 		assertEquals(expected, decoded);
-		assertEquals(array, TestRecord.LIST_CODEC.encode(decoded));
+		assertEquals(array, TestRecord.LIST_CODEC.encode(decoded).getOrThrow());
 	}
 }

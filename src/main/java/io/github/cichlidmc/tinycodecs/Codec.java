@@ -17,16 +17,16 @@ import java.util.function.UnaryOperator;
 public interface Codec<T> {
 	/**
 	 * Attempt to decode the given JsonValue.
-	 * An exception should never be thrown by this method.
+	 * Should never throw an exception.
 	 * @param value the JSON to decode. A JsonNull may indicate either a literal null or a missing field
 	 */
 	CodecResult<T> decode(JsonValue value);
 
 	/**
-	 * Encode the given value to JSON.
-	 * This should never fail.
+	 * Attempt to encode the given value to JSON.
+	 * Should never throw an exception.
 	 */
-	JsonValue encode(T value);
+	CodecResult<? extends JsonValue> encode(T value);
 
 	// transforms
 	
@@ -46,7 +46,7 @@ public interface Codec<T> {
 		return Codecs.flatMap(this, function);
 	}
 
-	default <B> Codec<B> xmap(Function<T, B> aToB, Function<B, T> bToA) {
+	default <B> Codec<B> xmap(Function<? super T, ? extends B> aToB, Function<? super B, ? extends T> bToA) {
 		return Codecs.xmap(this, aToB, bToA);
 	}
 
@@ -62,7 +62,7 @@ public interface Codec<T> {
 		return Codecs.dispatch(this, typeGetter, codecGetter);
 	}
 
-	default Codec<T> withAlternative(Codec<T> alternative) {
+	default Codec<T> withAlternative(Codec<? extends T> alternative) {
 		return Codecs.withAlternative(this, alternative);
 	}
 

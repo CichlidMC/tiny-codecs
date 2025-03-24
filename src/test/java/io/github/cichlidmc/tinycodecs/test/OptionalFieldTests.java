@@ -4,7 +4,7 @@ import io.github.cichlidmc.tinycodecs.test.types.TestRecord;
 import io.github.cichlidmc.tinyjson.value.composite.JsonObject;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class OptionalFieldTests {
 	@Test
@@ -14,6 +14,6 @@ public class OptionalFieldTests {
 				.put("i", 1)
 				.put("s", "test");
 
-		assertEquals(expected, TestRecord.CODEC.encode(record));
+		assertEquals(expected, TestRecord.CODEC.encode(record).getOrThrow());
 	}
 }

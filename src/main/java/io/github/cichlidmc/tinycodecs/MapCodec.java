@@ -13,8 +13,9 @@ public interface MapCodec<T> {
 
 	/**
 	 * Encode the given value onto the given JSON object.
+	 * @return a result, containing the given JSON if successful
 	 */
-	void encode(JsonObject json, T value);
+	CodecResult<JsonObject> encode(JsonObject json, T value);
 
 	default Codec<T> asCodec() {
 		return Codecs.asCodec(this);
