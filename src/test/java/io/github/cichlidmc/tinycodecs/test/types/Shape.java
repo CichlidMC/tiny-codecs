@@ -1,9 +1,8 @@
 package io.github.cichlidmc.tinycodecs.test.types;
 
 import io.github.cichlidmc.tinycodecs.Codec;
-import io.github.cichlidmc.tinycodecs.Codecs;
-import io.github.cichlidmc.tinycodecs.MapCodec;
 import io.github.cichlidmc.tinycodecs.codec.map.CompositeCodec;
+import io.github.cichlidmc.tinycodecs.map.MapCodec;
 
 public interface Shape {
 	Codec<Shape> CODEC = Type.CODEC.dispatch(Shape::getType, type -> type.codec);
@@ -11,7 +10,7 @@ public interface Shape {
 	Type getType();
 
 	class Circle implements Shape {
-		public static final Codec<Circle> CODEC = Codecs.FLOAT.xmap(Circle::new, circle -> circle.radius);
+		public static final Codec<Circle> CODEC = Codec.FLOAT.xmap(Circle::new, circle -> circle.radius);
 		public static final MapCodec<Circle> MAP_CODEC = CODEC.fieldOf("radius");
 
 		public final float radius;
@@ -28,7 +27,7 @@ public interface Shape {
 	}
 
 	class Square implements Shape {
-		public static final Codec<Square> CODEC = Codecs.FLOAT.xmap(Square::new, square -> square.length);
+		public static final Codec<Square> CODEC = Codec.FLOAT.xmap(Square::new, square -> square.length);
 		public static final MapCodec<Square> MAP_CODEC = CODEC.fieldOf("length");
 
 		public final float length;
@@ -45,8 +44,8 @@ public interface Shape {
 
 	class Triangle implements Shape {
 		public static final MapCodec<Triangle> CODEC = CompositeCodec.of(
-				Codecs.FLOAT.fieldOf("base"), triangle -> triangle.base,
-				Codecs.FLOAT.fieldOf("height"), triangle -> triangle.height,
+				Codec.FLOAT.fieldOf("base"), triangle -> triangle.base,
+				Codec.FLOAT.fieldOf("height"), triangle -> triangle.height,
 				Triangle::new
 		);
 
@@ -67,7 +66,7 @@ public interface Shape {
 	enum Type {
 		CIRCLE(Circle.MAP_CODEC), SQUARE(Square.MAP_CODEC), TRIANGLE(Triangle.CODEC);
 
-		public static final Codec<Type> CODEC = Codecs.byName(Type.class);
+		public static final Codec<Type> CODEC = Codec.byName(Type.class);
 
 		public final MapCodec<? extends Shape> codec;
 

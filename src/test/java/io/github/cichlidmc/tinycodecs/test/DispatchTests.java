@@ -1,6 +1,7 @@
 package io.github.cichlidmc.tinycodecs.test;
 
 import io.github.cichlidmc.tinycodecs.CodecResult;
+import io.github.cichlidmc.tinycodecs.test.types.Animal;
 import io.github.cichlidmc.tinycodecs.test.types.Shape;
 import io.github.cichlidmc.tinyjson.value.JsonValue;
 import io.github.cichlidmc.tinyjson.value.composite.JsonObject;
@@ -39,5 +40,16 @@ public class DispatchTests {
 		Shape shape = new Shape.Triangle(1, 2);
 		JsonValue actual = Shape.CODEC.encode(shape).getOrThrow();
 		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void codecDispatch() {
+		JsonObject json = new JsonObject()
+				.put("type", "cat")
+				.put("sound", "meow");
+
+		Animal animal = Animal.CODEC.decode(json).getOrThrow();
+		assertInstanceOf(Animal.Cat.class, animal);
+		assertEquals("meow", animal.sound());
 	}
 }

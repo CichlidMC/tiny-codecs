@@ -2,7 +2,7 @@ package io.github.cichlidmc.tinycodecs.codec.map;
 
 import io.github.cichlidmc.tinycodecs.Codec;
 import io.github.cichlidmc.tinycodecs.CodecResult;
-import io.github.cichlidmc.tinycodecs.MapCodec;
+import io.github.cichlidmc.tinycodecs.map.MapCodec;
 import io.github.cichlidmc.tinyjson.value.JsonValue;
 import io.github.cichlidmc.tinyjson.value.composite.JsonObject;
 

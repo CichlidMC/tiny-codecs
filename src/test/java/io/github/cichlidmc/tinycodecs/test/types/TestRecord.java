@@ -1,7 +1,6 @@
 package io.github.cichlidmc.tinycodecs.test.types;
 
 import io.github.cichlidmc.tinycodecs.Codec;
-import io.github.cichlidmc.tinycodecs.Codecs;
 import io.github.cichlidmc.tinycodecs.codec.map.CompositeCodec;
 
 import java.util.List;
@@ -9,9 +8,9 @@ import java.util.Objects;
 
 public class TestRecord {
 	public static final Codec<TestRecord> CODEC = CompositeCodec.of(
-			Codecs.INT.fieldOf("i"), test -> test.i,
-			Codecs.STRING.fieldOf("s"), test -> test.s,
-			Codecs.BOOL.optional(true).fieldOf("gerald"), test -> test.gerald,
+			Codec.INT.fieldOf("i"), test -> test.i,
+			Codec.STRING.fieldOf("s"), test -> test.s,
+			Codec.BOOL.optional(true).fieldOf("gerald"), test -> test.gerald,
 			TestRecord::new
 	).asCodec();
 

@@ -1,5 +1,8 @@
-package io.github.cichlidmc.tinycodecs;
+package io.github.cichlidmc.tinycodecs.map;
 
+import io.github.cichlidmc.tinycodecs.Codec;
+import io.github.cichlidmc.tinycodecs.CodecResult;
+import io.github.cichlidmc.tinycodecs.codec.map.MapCodecAsCodec;
 import io.github.cichlidmc.tinyjson.value.composite.JsonObject;
 
 /**
@@ -18,6 +21,6 @@ public interface MapCodec<T> {
 	CodecResult<JsonObject> encode(JsonObject json, T value);
 
 	default Codec<T> asCodec() {
-		return Codecs.asCodec(this);
+		return new MapCodecAsCodec<>(this);
 	}
 }

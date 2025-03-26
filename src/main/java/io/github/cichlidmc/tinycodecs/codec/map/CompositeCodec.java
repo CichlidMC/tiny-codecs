@@ -1,7 +1,7 @@
 package io.github.cichlidmc.tinycodecs.codec.map;
 
 import io.github.cichlidmc.tinycodecs.CodecResult;
-import io.github.cichlidmc.tinycodecs.MapCodec;
+import io.github.cichlidmc.tinycodecs.map.MapCodec;
 import io.github.cichlidmc.tinycodecs.util.Functions.F1;
 import io.github.cichlidmc.tinycodecs.util.Functions.F2;
 import io.github.cichlidmc.tinycodecs.util.Functions.F3;
@@ -117,10 +117,14 @@ public final class CompositeCodec {
 	}
 
 	private static <T> MapCodec<T> create(Function<? super JsonObject, ? extends T> decoder, BiConsumer<? super JsonObject, ? super T> encoder) {
-		return new ThrowingMapCodec<T>() {
+		return new MapCodec<T>() {
 			@Override
-			public T decodeUnsafe(JsonObject json) throws JsonException {
-				return decoder.apply(json);
+			public CodecResult<T> decode(JsonObject json) {
+				try {
+					return CodecResult.success(decoder.apply(json));
+				} catch (JsonException e) {
+					return CodecResult.error(e.getMessage());
+				}
 			}
 
 			@Override
@@ -132,7 +136,10 @@ public final class CompositeCodec {
 	}
 
 	private static <T, F> void encodeField(JsonObject json, MapCodec<? super F> codec, F1<T, F> getter, T owner) {
-		codec.encode(json, getter.apply(owner));
+		CodecResult<JsonObject> result = codec.encode(json, getter.apply(owner));
+		if (result.isError()) {
+			throw new JsonException("Failed to encode field: " + result.asError().message);
+		}
 	}
 
 	private static <T, F> F decodeField(JsonObject json, MapCodec<F> codec) {

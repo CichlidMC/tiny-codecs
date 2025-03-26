@@ -13,12 +13,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public final class XorTests {
+public final class EitherTests {
 	@Test
 	public void left() {
 		JsonValue input = new JsonString("1,2,3");
 		CodecResult<Vec3> result = Vec3.STRING_OR_INT_ARRAY_CODEC.decode(input);
-		assertTrue(result.isSuccess());
+		assertTrue(result.isSuccess(), () -> result.asError().message);
 	}
 
 	@Test
@@ -38,10 +38,18 @@ public final class XorTests {
 	}
 
 	@Test
-	public void both() {
+	public void bothStrict() {
 		Codec<Vec3> codec = Vec3.STRING_CODEC.xor(Vec3.ZERO_UNIT_CODEC).xmap(Either::merge, Either::left);
 		JsonValue input = new JsonString("4,5,6");
 		CodecResult<Vec3> result = codec.decode(input);
 		assertTrue(result.isError());
+	}
+
+	@Test
+	public void bothLoose() {
+		Codec<Vec3> codec = Vec3.STRING_CODEC.either(Vec3.ZERO_UNIT_CODEC).xmap(Either::merge, Either::left);
+		JsonValue input = new JsonString("4,5,6");
+		CodecResult<Vec3> result = codec.decode(input);
+		assertTrue(result.isSuccess());
 	}
 }
