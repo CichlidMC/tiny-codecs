@@ -11,6 +11,7 @@ import io.github.cichlidmc.tinycodecs.codec.optional.DefaultedOptionalCodec;
 import io.github.cichlidmc.tinycodecs.codec.optional.OptionalCodec;
 import io.github.cichlidmc.tinycodecs.map.MapCodec;
 import io.github.cichlidmc.tinycodecs.util.Either;
+import io.github.cichlidmc.tinycodecs.util.Lazy;
 import io.github.cichlidmc.tinyjson.JsonException;
 import io.github.cichlidmc.tinyjson.value.JsonValue;
 import io.github.cichlidmc.tinyjson.value.primitive.JsonBool;
@@ -143,6 +144,22 @@ public interface Codec<T> extends Encoder<T>, Decoder<T> {
 			@Override
 			public CodecResult<? extends JsonValue> encode(T value) {
 				return CodecResult.success(encoder.apply(value));
+			}
+		};
+	}
+
+	static <T> Codec<T> lazy(Supplier<? extends Codec<T>> factory) {
+		Lazy<Codec<T>> lazy = new Lazy<>(factory);
+
+		return new Codec<T>() {
+			@Override
+			public CodecResult<T> decode(JsonValue json) {
+				return lazy.get().decode(json);
+			}
+
+			@Override
+			public CodecResult<? extends JsonValue> encode(T value) {
+				return lazy.get().encode(value);
 			}
 		};
 	}
