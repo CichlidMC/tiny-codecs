@@ -1,2 +1,1 @@
-rootProject.name = "TinyCodecs"
-
+rootProject.name = "tiny-codecs"
