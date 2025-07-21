@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "fish.cichlidmc"
-version = "3.1.0"
+version = "3.2.0"
 
 repositories {
     mavenCentral()
@@ -13,7 +13,7 @@ repositories {
 
 dependencies {
     compileOnlyApi("org.jetbrains:annotations:24.1.0")
-    api("fish.cichlidmc:tiny-json:1.2.0")
+    api("fish.cichlidmc:tiny-json:1.3.0")
 
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
@@ -23,7 +23,12 @@ tasks.test {
     useJUnitPlatform()
 }
 
-java.withSourcesJar()
+java {
+    withSourcesJar()
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
 
 publishing {
     publications {
