@@ -1,0 +1,17 @@
+[versions]
+jetbrains-annotations = "24.1.0"
+tiny-json = "2.0.0"
+junit = "6.0.1"
+
+[libraries]
+jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
+tiny-json = { module = "fish.cichlidmc:tiny-json", version.ref = "tiny-json" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+junit-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit" }
+
+[bundles]
+junit = [ "junit-jupiter", "junit-launcher" ]
+
+[plugins]
+java-library = { id = "java-library" }
+maven-publish = { id = "maven-publish" }

@@ -1,19 +1,14 @@
-package fish.cichlidmc.tinycodecs.codec;
+package fish.cichlidmc.tinycodecs.impl.codec;
 
-import fish.cichlidmc.tinycodecs.Codec;
-import fish.cichlidmc.tinycodecs.CodecResult;
-import fish.cichlidmc.tinycodecs.util.Either;
+import fish.cichlidmc.tinycodecs.api.CodecResult;
+import fish.cichlidmc.tinycodecs.api.Either;
+import fish.cichlidmc.tinycodecs.api.codec.Codec;
 import fish.cichlidmc.tinyjson.value.JsonValue;
 
-public final class EitherCodec<L, R> implements Codec<Either<L, R>> {
-	private final Codec<L> left;
-	private final Codec<R> right;
-	private final boolean strict;
-
-	public EitherCodec(Codec<L> left, Codec<R> right, boolean strict) {
-		this.left = left;
-		this.right = right;
-		this.strict = strict;
+public record EitherCodec<L, R>(Codec<L> left, Codec<R> right, boolean strict) implements Codec<Either<L, R>> {
+	@Override
+	public CodecResult<? extends JsonValue> encode(Either<L, R> value) {
+		return Either.join(value.map(this.left::encode, this.right::encode));
 	}
 
 	@Override
@@ -33,14 +28,10 @@ public final class EitherCodec<L, R> implements Codec<Either<L, R>> {
 		} else if (rightResult.isSuccess()) {
 			return rightResult;
 		} else {
-			String firstMessage = leftResult.asError().message;
-			String secondMessage = rightResult.asError().message;
+			// both must be an Error based on previous conditions
+			String firstMessage = ((CodecResult.Error<?>) leftResult).message();
+			String secondMessage = ((CodecResult.Error<?>) rightResult).message();
 			return CodecResult.error("Both formats failed to decode: " + firstMessage + "; " + secondMessage);
 		}
-	}
-
-	@Override
-	public CodecResult<? extends JsonValue> encode(Either<L, R> value) {
-		return Either.merge(value.map(this.left::encode, this.right::encode));
 	}
 }

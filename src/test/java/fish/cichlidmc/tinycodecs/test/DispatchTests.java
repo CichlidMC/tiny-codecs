@@ -1,6 +1,6 @@
 package fish.cichlidmc.tinycodecs.test;
 
-import fish.cichlidmc.tinycodecs.CodecResult;
+import fish.cichlidmc.tinycodecs.api.CodecResult;
 import fish.cichlidmc.tinycodecs.test.types.Animal;
 import fish.cichlidmc.tinycodecs.test.types.Shape;
 import fish.cichlidmc.tinyjson.value.JsonValue;

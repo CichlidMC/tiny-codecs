@@ -1,17 +1,18 @@
-package fish.cichlidmc.tinycodecs;
+package fish.cichlidmc.tinycodecs.api.codec;
 
-import fish.cichlidmc.tinycodecs.codec.ByNameCodec;
-import fish.cichlidmc.tinycodecs.codec.DispatchCodec;
-import fish.cichlidmc.tinycodecs.codec.EitherCodec;
-import fish.cichlidmc.tinycodecs.codec.ListCodec;
-import fish.cichlidmc.tinycodecs.codec.UnitCodec;
-import fish.cichlidmc.tinycodecs.codec.map.CompositeCodec;
-import fish.cichlidmc.tinycodecs.codec.map.FieldOfCodec;
-import fish.cichlidmc.tinycodecs.codec.optional.DefaultedOptionalCodec;
-import fish.cichlidmc.tinycodecs.codec.optional.OptionalCodec;
-import fish.cichlidmc.tinycodecs.map.MapCodec;
-import fish.cichlidmc.tinycodecs.util.Either;
-import fish.cichlidmc.tinycodecs.util.Lazy;
+import fish.cichlidmc.tinycodecs.api.CodecResult;
+import fish.cichlidmc.tinycodecs.api.Either;
+import fish.cichlidmc.tinycodecs.api.codec.dual.DualCodec;
+import fish.cichlidmc.tinycodecs.api.codec.map.MapCodec;
+import fish.cichlidmc.tinycodecs.impl.Lazy;
+import fish.cichlidmc.tinycodecs.impl.codec.ByNameCodec;
+import fish.cichlidmc.tinycodecs.impl.codec.DispatchCodec;
+import fish.cichlidmc.tinycodecs.impl.codec.EitherCodec;
+import fish.cichlidmc.tinycodecs.impl.codec.ListCodec;
+import fish.cichlidmc.tinycodecs.impl.codec.UnitCodec;
+import fish.cichlidmc.tinycodecs.impl.codec.map.FieldOfCodec;
+import fish.cichlidmc.tinycodecs.impl.codec.optional.DefaultedOptionalCodec;
+import fish.cichlidmc.tinycodecs.impl.codec.optional.OptionalCodec;
 import fish.cichlidmc.tinyjson.JsonException;
 import fish.cichlidmc.tinyjson.value.JsonValue;
 import fish.cichlidmc.tinyjson.value.primitive.JsonBool;
@@ -19,7 +20,6 @@ import fish.cichlidmc.tinyjson.value.primitive.JsonNumber;
 import fish.cichlidmc.tinyjson.value.primitive.JsonString;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,11 +30,13 @@ import java.util.function.Supplier;
 /**
  * A Codec is both an encoder and decoder of some type of object.
  * @see CompositeCodec
+ * @see MapCodec
+ * @see DualCodec
  */
 public interface Codec<T> extends Encoder<T>, Decoder<T> {
 	// base implementations
-	Codec<Boolean> BOOL = throwing(json -> json.asBoolean().value(), JsonBool::new);
-	Codec<String> STRING = throwing(json -> json.asString().value(), JsonString::new);
+	Codec<Boolean> BOOL = throwing(JsonBool::new, json -> json.asBoolean().value());
+	Codec<String> STRING = throwing(JsonString::new, json -> json.asString().value());
 	Codec<Byte> BYTE = number(Number::byteValue);
 	Codec<Short> SHORT = number(Number::shortValue);
 	Codec<Integer> INT = number(Number::intValue);
@@ -73,7 +75,7 @@ public interface Codec<T> extends Encoder<T>, Decoder<T> {
 	}
 
 	default Codec<T> withAlternative(Codec<? extends T> alternative) {
-		return this.either(alternative).xmap(Either::merge, Either::left);
+		return this.either(alternative).xmap(Either::join, Either::left);
 	}
 
 	default Codec<List<T>> listOf() {
@@ -82,8 +84,8 @@ public interface Codec<T> extends Encoder<T>, Decoder<T> {
 
 	default Codec<List<T>> listOrSingle() {
 		return this.listOf().withAlternative(this.flatComapMap(
-				Collections::singletonList,
-				list -> list.size() == 1 ? CodecResult.success(list.get(0)) : CodecResult.error("Not a singleton")
+				List::of,
+				list -> list.size() == 1 ? CodecResult.success(list.getFirst()) : CodecResult.error("Not a singleton")
 		));
 	}
 
@@ -114,60 +116,48 @@ public interface Codec<T> extends Encoder<T>, Decoder<T> {
 	// factories
 
 	static <T> Codec<T> of(Encoder<? super T> encoder, Decoder<T> decoder) {
-		return new Codec<T>() {
-			@Override
-			public CodecResult<T> decode(JsonValue json) {
-				return decoder.decode(json);
-			}
-
+		return new Codec<>() {
 			@Override
 			public CodecResult<? extends JsonValue> encode(T value) {
 				return encoder.encode(value);
+			}
+
+			@Override
+			public CodecResult<T> decode(JsonValue json) {
+				return decoder.decode(json);
 			}
 		};
 	}
 
 	/**
-	 * Create a codec from a function that may throw a {@link JsonException}.
+	 * Create a codec from a pair of functions, where the decoder may throw a {@link JsonException}.
 	 */
-	static <T> Codec<T> throwing(Function<? super JsonValue, ? extends T> decoder, Function<? super T, ? extends JsonValue> encoder) {
-		return new Codec<T>() {
-			@Override
-			public CodecResult<T> decode(JsonValue json) {
-				try {
-					return CodecResult.success(decoder.apply(json));
-				} catch (JsonException e) {
-					return CodecResult.error(e.getMessage());
+	static <T> Codec<T> throwing(Function<? super T, ? extends JsonValue> encoder, Function<? super JsonValue, ? extends T> decoder) {
+		return of(
+				value -> CodecResult.success(encoder.apply(value)),
+				json -> {
+					try {
+						return CodecResult.success(decoder.apply(json));
+					} catch (JsonException e) {
+						return CodecResult.error(e.getMessage());
+					}
 				}
-			}
-
-			@Override
-			public CodecResult<? extends JsonValue> encode(T value) {
-				return CodecResult.success(encoder.apply(value));
-			}
-		};
+		);
 	}
 
 	static <T> Codec<T> lazy(Supplier<? extends Codec<T>> factory) {
 		Lazy<Codec<T>> lazy = new Lazy<>(factory);
 
-		return new Codec<T>() {
-			@Override
-			public CodecResult<T> decode(JsonValue json) {
-				return lazy.get().decode(json);
-			}
-
-			@Override
-			public CodecResult<? extends JsonValue> encode(T value) {
-				return lazy.get().encode(value);
-			}
-		};
+		return of(
+				value -> lazy.get().encode(value),
+				json -> lazy.get().decode(json)
+		);
 	}
 
 	static <T extends Number> Codec<T> number(Function<Number, T> decoder) {
 		return throwing(
-				json -> decoder.apply(json.asNumber().strictValue()),
-				number -> new JsonNumber(number.doubleValue())
+				number -> new JsonNumber(number.doubleValue()),
+				json -> decoder.apply(json.asNumber().strictValue())
 		);
 	}
 

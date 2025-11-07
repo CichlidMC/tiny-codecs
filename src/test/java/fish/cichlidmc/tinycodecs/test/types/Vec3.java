@@ -1,11 +1,11 @@
 package fish.cichlidmc.tinycodecs.test.types;
 
-import fish.cichlidmc.tinycodecs.Codec;
-import fish.cichlidmc.tinycodecs.CodecResult;
+import fish.cichlidmc.tinycodecs.api.CodecResult;
+import fish.cichlidmc.tinycodecs.api.codec.Codec;
 
 import java.util.Arrays;
 
-public final class Vec3 {
+public record Vec3(int x, int y, int z) {
 	public static final Codec<Vec3> INT_ARRAY_CODEC = Codec.INT.listOf().comapFlatMap(
 			list -> list.size() != 3 ? CodecResult.error("Wrong size") : CodecResult.success(new Vec3(list.get(0), list.get(1), list.get(2))),
 			vec -> Arrays.asList(vec.x, vec.y, vec.z)
@@ -32,14 +32,4 @@ public final class Vec3 {
 	);
 	public static final Codec<Vec3> STRING_OR_INT_ARRAY_CODEC = STRING_CODEC.withAlternative(INT_ARRAY_CODEC);
 	public static final Codec<Vec3> ZERO_UNIT_CODEC = Codec.unit(new Vec3(0, 0, 0));
-
-	public final int x;
-	public final int y;
-	public final int z;
-
-	public Vec3(int x, int y, int z) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
 }

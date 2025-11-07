@@ -1,6 +1,8 @@
-package fish.cichlidmc.tinycodecs.util;
+package fish.cichlidmc.tinycodecs.api;
 
-public class Functions {
+public final class Functions {
+	private Functions() {}
+
 	public interface F1<A, T> { T apply(A a); }
 	public interface F2<A, B, T> { T apply(A a, B b); }
 	public interface F3<A, B, C, T> { T apply(A a, B b, C c); }

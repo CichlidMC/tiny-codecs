@@ -7,7 +7,6 @@ import fish.cichlidmc.tinyjson.value.composite.JsonObject;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,14 +14,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ListTests {
 	@Test
 	public void emptyList() {
-		List<TestRecord> list = Collections.emptyList();
+		List<TestRecord> list = List.of();
 		JsonValue encoded = TestRecord.LIST_CODEC.encode(list).getOrThrow();
 
 		assertEquals(new JsonArray(), encoded);
 
 		JsonArray array = new JsonArray();
 		List<TestRecord> decoded = TestRecord.LIST_CODEC.decode(array).getOrThrow();
-		assertEquals(Collections.emptyList(), decoded);
+		assertEquals(List.of(), decoded);
 	}
 
 	@Test

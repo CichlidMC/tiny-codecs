@@ -1,7 +1,7 @@
-package fish.cichlidmc.tinycodecs.codec.optional;
+package fish.cichlidmc.tinycodecs.impl.codec.optional;
 
-import fish.cichlidmc.tinycodecs.Codec;
-import fish.cichlidmc.tinycodecs.CodecResult;
+import fish.cichlidmc.tinycodecs.api.CodecResult;
+import fish.cichlidmc.tinycodecs.api.codec.Codec;
 import fish.cichlidmc.tinyjson.value.JsonValue;
 import fish.cichlidmc.tinyjson.value.primitive.JsonNull;
 
@@ -20,20 +20,20 @@ public final class DefaultedOptionalCodec<T> implements Codec<T> {
 	}
 
 	@Override
-	public CodecResult<T> decode(JsonValue value) {
-		if (value instanceof JsonNull) {
-			return CodecResult.success(this.fallback.get());
-		} else {
-			return this.wrapped.decode(value);
-		}
-	}
-
-	@Override
 	public CodecResult<? extends JsonValue> encode(T value) {
 		if (value.equals(this.cached)) {
 			return CodecResult.success(new JsonNull());
 		} else {
 			return this.wrapped.encode(value);
+		}
+	}
+
+	@Override
+	public CodecResult<T> decode(JsonValue value) {
+		if (value instanceof JsonNull) {
+			return CodecResult.success(this.fallback.get());
+		} else {
+			return this.wrapped.decode(value);
 		}
 	}
 }

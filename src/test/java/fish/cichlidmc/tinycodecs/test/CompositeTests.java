@@ -11,7 +11,7 @@ public class CompositeTests {
 	@Test
 	public void testRecord() {
 		TestRecord record = new TestRecord(4, "test", false);
-		JsonValue json = TestRecord.CODEC.encode(record).getOrThrow();
+		JsonValue json = TestRecord.CODEC.codec().encode(record).getOrThrow();
 
 		JsonObject expected = new JsonObject()
 				.put("i", 4)
@@ -20,7 +20,7 @@ public class CompositeTests {
 
 		assertEquals(expected, json);
 
-		TestRecord decoded = TestRecord.CODEC.decode(json).getOrThrow();
+		TestRecord decoded = TestRecord.CODEC.codec().decode(json).getOrThrow();
 		assertEquals(record, decoded);
 	}
 
@@ -32,7 +32,7 @@ public class CompositeTests {
 				.put("i", 1)
 				.put("s", "h!");
 
-		TestRecord decoded = TestRecord.CODEC.decode(json).getOrThrow();
+		TestRecord decoded = TestRecord.CODEC.codec().decode(json).getOrThrow();
 		assertEquals(expected, decoded);
 	}
 

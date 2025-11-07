@@ -1,22 +1,31 @@
 plugins {
-    id("java-library")
-    id("maven-publish")
+    alias(libs.plugins.java.library)
+    alias(libs.plugins.maven.publish)
 }
 
 group = "fish.cichlidmc"
-version = "3.2.0"
+version = "4.0.0"
 
 repositories {
-    mavenCentral()
-    maven("https://mvn.devos.one/releases/")
+    exclusiveContent {
+        forRepositories(mavenCentral()).filter {
+            includeModule("org.jetbrains", "annotations")
+            includeGroupAndSubgroups("org.junit")
+            // all of these are used by Junit
+            includeModule("org.apiguardian", "apiguardian-api")
+            includeModule("org.jspecify", "jspecify")
+            includeModule("org.opentest4j", "opentest4j")
+        }
+        forRepositories(maven("https://mvn.devos.one/releases/")).filter {
+            includeModule("fish.cichlidmc", "tiny-json")
+        }
+    }
 }
 
 dependencies {
-    compileOnlyApi("org.jetbrains:annotations:24.1.0")
-    api("fish.cichlidmc:tiny-json:1.3.0")
-
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
+    compileOnlyApi(libs.jetbrains.annotations)
+    api(libs.tiny.json)
+    testImplementation(libs.bundles.junit)
 }
 
 tasks.test {
