@@ -28,6 +28,11 @@ dependencies {
     testImplementation(libs.bundles.junit)
 }
 
+tasks.compileJava {
+    // sync module version so it can be read at runtime
+    options.javaModuleVersion = provider { version as String }
+}
+
 tasks.test {
     useJUnitPlatform()
 }
