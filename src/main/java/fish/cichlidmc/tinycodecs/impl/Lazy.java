@@ -7,7 +7,7 @@ import java.util.function.Supplier;
  * Holds a supplier that is evaluated lazily and then cached.
  */
 public final class Lazy<T> {
-	private Supplier<? extends T> factory;
+	private volatile Supplier<? extends T> factory;
 	private T value;
 
 	public Lazy(Supplier<? extends T> factory) {
@@ -16,8 +16,12 @@ public final class Lazy<T> {
 
 	public T get() {
 		if (this.factory != null) {
-			this.value = this.factory.get();
-			this.factory = null;
+			synchronized (this) {
+				if (this.factory != null) {
+					this.value = this.factory.get();
+					this.factory = null;
+				}
+			}
 		}
 
 		return this.value;
