@@ -1,4 +1,4 @@
-module fish.cichlidmc.tinycodecs {
+open module fish.cichlidmc.tinycodecs {
 	requires static org.jetbrains.annotations;
 	requires fish.cichlidmc.tinyjson;
 
