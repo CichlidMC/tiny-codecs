@@ -36,11 +36,11 @@ public record DualCodec<T>(Codec<T> codec, MapCodec<T> mapCodec) {
 
 	// factories
 
-	static <T> DualCodec<T> unit(T unit) {
+	public static <T> DualCodec<T> unit(T unit) {
 		return new DualCodec<>(Codec.unit(unit), MapCodec.unit(unit));
 	}
 
-	static <T> DualCodec<T> lazy(Supplier<DualCodec<T>> factory) {
+	public static <T> DualCodec<T> lazy(Supplier<DualCodec<T>> factory) {
 		Lazy<DualCodec<T>> lazy = new Lazy<>(factory);
 		return new DualCodec<>(Codec.lazy(() -> lazy.get().codec()), MapCodec.lazy(() -> lazy.get().mapCodec()));
 	}
