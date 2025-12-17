@@ -1,17 +1,20 @@
 [versions]
 jetbrains-annotations = "24.1.0"
-tiny-json = "2.0.1"
+jspecify = "1.0.0"
+tiny-json = "3.0.0"
 fishflakes = "0.1.0"
 junit = "6.0.1"
 
 [libraries]
 jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
+jspecify = { module = "org.jspecify:jspecify", version.ref = "jspecify" }
 tiny-json = { module = "fish.cichlidmc:tiny-json", version.ref = "tiny-json" }
 fishflakes = { module = "fish.cichlidmc:fishflakes", version.ref = "fishflakes" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
 junit-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit" }
 
 [bundles]
+annotations = [ "jetbrains-annotations", "jspecify" ]
 junit = [ "junit-jupiter", "junit-launcher" ]
 
 [plugins]

@@ -4,7 +4,7 @@ import fish.cichlidmc.fishflakes.api.Result;
 import fish.cichlidmc.tinycodecs.api.codec.Codec;
 import fish.cichlidmc.tinyjson.value.JsonValue;
 import fish.cichlidmc.tinyjson.value.primitive.JsonString;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Function;
 
@@ -25,11 +25,11 @@ public final class ByNameCodec<T> implements Codec<T> {
 
 	@Override
 	public Result<T> decode(JsonValue value) {
-		if (!(value instanceof JsonString)) {
+		if (!(value instanceof JsonString string)) {
 			return Result.error("Name is not a String");
 		}
 
-		String name = value.asString().value();
+		String name = string.value();
 		T named = this.byName.apply(name);
 
 		return named != null ? Result.success(named) : Result.error("No entry named " + name);

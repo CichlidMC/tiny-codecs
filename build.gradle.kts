@@ -4,16 +4,16 @@ plugins {
 }
 
 group = "fish.cichlidmc"
-version = "4.1.0"
+version = "5.0.0"
 
 repositories {
     exclusiveContent {
         forRepositories(mavenCentral()).filter {
             includeModule("org.jetbrains", "annotations")
-            includeGroupAndSubgroups("org.junit")
-            // all of these are used by Junit
-            includeModule("org.apiguardian", "apiguardian-api")
             includeModule("org.jspecify", "jspecify")
+            includeGroupAndSubgroups("org.junit")
+            // these are pulled in transitively by Junit
+            includeModule("org.apiguardian", "apiguardian-api")
             includeModule("org.opentest4j", "opentest4j")
         }
         forRepositories(maven("https://mvn.devos.one/releases/")).filter {
@@ -24,7 +24,7 @@ repositories {
 }
 
 dependencies {
-    compileOnlyApi(libs.jetbrains.annotations)
+    compileOnlyApi(libs.bundles.annotations)
     api(libs.tiny.json)
     api(libs.fishflakes)
     testImplementation(libs.bundles.junit)

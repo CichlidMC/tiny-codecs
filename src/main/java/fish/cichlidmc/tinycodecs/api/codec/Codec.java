@@ -18,7 +18,7 @@ import fish.cichlidmc.tinyjson.value.JsonValue;
 import fish.cichlidmc.tinyjson.value.primitive.JsonBool;
 import fish.cichlidmc.tinyjson.value.primitive.JsonNumber;
 import fish.cichlidmc.tinyjson.value.primitive.JsonString;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -157,6 +157,7 @@ public interface Codec<T> extends Encoder<T>, Decoder<T> {
 		);
 	}
 
+	@SuppressWarnings("NullableProblems") // not sure what's happening here
 	static <T> Codec<T> byName(Function<? super T, @Nullable String> nameGetter, Function<? super String, ? extends @Nullable T> byName) {
 		return new ByNameCodec<>(nameGetter, byName);
 	}
