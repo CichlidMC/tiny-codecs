@@ -11,13 +11,9 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-/**
- * Similar to a {@link Codec}, but operates specifically on maps ({@link JsonObject}s).
- */
+/// Similar to a [Codec], but operates specifically on maps ([JsonObject]s).
 public interface MapCodec<T> extends MapEncoder<T>, MapDecoder<T> {
-	/**
-	 * Create a {@link Codec} that will deserialize a {@link JsonObject} using this MapCodec.
-	 */
+	/// Create a [Codec] that will deserialize a [JsonObject] using this MapCodec.
 	default Codec<T> asCodec() {
 		return new MapCodecAsCodec<>(this);
 	}

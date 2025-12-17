@@ -7,28 +7,20 @@ import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Function;
 
-/**
- * Decodes a value from a {@link JsonObject}.
- * @see Decoder
- */
+/// Decodes a value from a [JsonObject].
+/// @see Decoder
 public interface MapDecoder<T> {
-	/**
-	 * Attempt to decode an object from fields on the given {@link JsonObject}.
-	 * @implNote implementations are expected to always return an Error result instead of throwing an exception
-	 */
+	/// Attempt to decode an object from fields on the given [JsonObject].
+	/// @implNote implementations are expected to always return an Error result instead of throwing an exception
 	Result<T> decode(JsonObject json);
 
-	/**
-	 * @return a new MapDecoder that applies the given function to decoded values
-	 */
+	/// @return a new MapDecoder that applies the given function to decoded values
 	@ApiStatus.NonExtendable
 	default <B> MapDecoder<B> map(Function<? super T, ? extends B> function) {
 		return json -> this.decode(json).map(function);
 	}
 
-	/**
-	 * @return a new MapDecoder that applies the given result-bearing function to decoded values
-	 */
+	/// @return a new MapDecoder that applies the given result-bearing function to decoded values
 	@ApiStatus.NonExtendable
 	default <B> MapDecoder<B> flatMap(Function<? super T, ? extends Result<? extends B>> function) {
 		// load-bearing Function.identity()

@@ -9,10 +9,8 @@ import fish.cichlidmc.tinycodecs.impl.Lazy;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-/**
- * Both a {@link Codec} and a {@link MapCodec} for the same type. Allows for easily transforming the two at the same time.
- * @see CompositeCodec
- */
+/// Both a [Codec] and a [MapCodec] for the same type. Allows for easily transforming the two at the same time.
+/// @see CompositeCodec
 public record DualCodec<T>(Codec<T> codec, MapCodec<T> mapCodec) {
 	public DualCodec<T> validate(Function<? super T, ? extends Result<T>> validator) {
 		return this.flatXmap(validator, validator);

@@ -27,12 +27,10 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-/**
- * A Codec is both an encoder and decoder of some type of object.
- * @see CompositeCodec
- * @see MapCodec
- * @see DualCodec
- */
+/// A Codec is both an encoder and decoder of some type of object.
+/// @see CompositeCodec
+/// @see MapCodec
+/// @see DualCodec
 public interface Codec<T> extends Encoder<T>, Decoder<T> {
 	// base implementations
 	Codec<Boolean> BOOL = throwing(JsonBool::new, json -> json.asBoolean().value());
@@ -129,9 +127,7 @@ public interface Codec<T> extends Encoder<T>, Decoder<T> {
 		};
 	}
 
-	/**
-	 * Create a codec from a pair of functions, where the decoder may throw a {@link JsonException}.
-	 */
+	/// Create a codec from a pair of functions, where the decoder may throw a [JsonException].
 	static <T> Codec<T> throwing(Function<? super T, ? extends JsonValue> encoder, Function<? super JsonValue, ? extends T> decoder) {
 		return of(
 				value -> Result.success(encoder.apply(value)),

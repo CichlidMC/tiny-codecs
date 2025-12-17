@@ -3,9 +3,7 @@ package fish.cichlidmc.tinycodecs.impl;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-/**
- * Holds a supplier that is evaluated lazily and then cached.
- */
+/// Holds a supplier that is evaluated lazily and then cached.
 public final class Lazy<T> {
 	private volatile Supplier<? extends T> factory;
 	private T value;

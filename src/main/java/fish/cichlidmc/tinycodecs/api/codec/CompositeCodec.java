@@ -16,9 +16,7 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-/**
- * Factory methods for creating codecs by combining others into a single object, quarantined to their own class.
- */
+/// Factory methods for creating codecs by combining others into a single object, quarantined to their own class.
 @SuppressWarnings("DuplicatedCode")
 public final class CompositeCodec {
 	private CompositeCodec() {}
