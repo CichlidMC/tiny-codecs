@@ -15,12 +15,12 @@ public class ListTests {
 	@Test
 	public void emptyList() {
 		List<TestRecord> list = List.of();
-		JsonValue encoded = TestRecord.LIST_CODEC.encode(list).getOrThrow();
+		JsonValue encoded = TestRecord.LIST_CODEC.encode(list).valueOrThrow();
 
 		assertEquals(new JsonArray(), encoded);
 
 		JsonArray array = new JsonArray();
-		List<TestRecord> decoded = TestRecord.LIST_CODEC.decode(array).getOrThrow();
+		List<TestRecord> decoded = TestRecord.LIST_CODEC.decode(array).valueOrThrow();
 		assertEquals(List.of(), decoded);
 	}
 
@@ -36,9 +36,9 @@ public class ListTests {
 						.put("gerald", false)
 		);
 
-		List<TestRecord> decoded = TestRecord.LIST_CODEC.decode(array).getOrThrow();
+		List<TestRecord> decoded = TestRecord.LIST_CODEC.decode(array).valueOrThrow();
 		assertEquals(expected, decoded);
-		assertEquals(array, TestRecord.LIST_CODEC.encode(decoded).getOrThrow());
+		assertEquals(array, TestRecord.LIST_CODEC.encode(decoded).valueOrThrow());
 	}
 
 	@Test
@@ -57,8 +57,8 @@ public class ListTests {
 						.put("gerald", false)
 		);
 
-		List<TestRecord> decoded = TestRecord.LIST_CODEC.decode(array).getOrThrow();
+		List<TestRecord> decoded = TestRecord.LIST_CODEC.decode(array).valueOrThrow();
 		assertEquals(expected, decoded);
-		assertEquals(array, TestRecord.LIST_CODEC.encode(decoded).getOrThrow());
+		assertEquals(array, TestRecord.LIST_CODEC.encode(decoded).valueOrThrow());
 	}
 }

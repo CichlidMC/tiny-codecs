@@ -1,6 +1,7 @@
 open module fish.cichlidmc.tinycodecs {
 	requires static transitive org.jetbrains.annotations;
 	requires transitive fish.cichlidmc.tinyjson;
+	requires transitive fish.cichlidmc.fishflakes;
 
 	exports fish.cichlidmc.tinycodecs.api;
 	exports fish.cichlidmc.tinycodecs.api.codec;

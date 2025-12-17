@@ -1,6 +1,6 @@
 package fish.cichlidmc.tinycodecs.api.codec;
 
-import fish.cichlidmc.tinycodecs.api.CodecResult;
+import fish.cichlidmc.fishflakes.api.Result;
 import fish.cichlidmc.tinycodecs.api.codec.map.MapDecoder;
 import fish.cichlidmc.tinyjson.value.JsonValue;
 import org.jetbrains.annotations.ApiStatus;
@@ -18,7 +18,7 @@ public interface Decoder<T> {
 	 * @param json the JSON to decode. A JsonNull may indicate either a literal null or a missing field
 	 * @implNote implementations are expected to always return an Error result instead of throwing an exception
 	 */
-	CodecResult<T> decode(JsonValue json);
+	Result<T> decode(JsonValue json);
 
 	/**
 	 * @return a new Decoder that applies the given function to decoded values
@@ -32,7 +32,7 @@ public interface Decoder<T> {
 	 * @return a new MapDecoder that applies the given result-bearing function to decoded values
 	 */
 	@ApiStatus.NonExtendable
-	default <B> Decoder<B> flatMap(Function<? super T, ? extends CodecResult<? extends B>> function) {
+	default <B> Decoder<B> flatMap(Function<? super T, ? extends Result<? extends B>> function) {
 		// load-bearing Function.identity()
 		return json -> this.decode(json).flatMap(value -> function.apply(value).map(Function.identity()));
 	}

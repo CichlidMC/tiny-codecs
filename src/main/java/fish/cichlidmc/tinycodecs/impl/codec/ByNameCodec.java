@@ -1,6 +1,6 @@
 package fish.cichlidmc.tinycodecs.impl.codec;
 
-import fish.cichlidmc.tinycodecs.api.CodecResult;
+import fish.cichlidmc.fishflakes.api.Result;
 import fish.cichlidmc.tinycodecs.api.codec.Codec;
 import fish.cichlidmc.tinyjson.value.JsonValue;
 import fish.cichlidmc.tinyjson.value.primitive.JsonString;
@@ -18,20 +18,20 @@ public final class ByNameCodec<T> implements Codec<T> {
 	}
 
 	@Override
-	public CodecResult<? extends JsonValue> encode(T value) {
+	public Result<? extends JsonValue> encode(T value) {
 		String name = this.nameGetter.apply(value);
-		return name != null ? CodecResult.success(new JsonString(name)) : CodecResult.error("Unknown name for entry " + value);
+		return name != null ? Result.success(new JsonString(name)) : Result.error("Unknown name for entry " + value);
 	}
 
 	@Override
-	public CodecResult<T> decode(JsonValue value) {
+	public Result<T> decode(JsonValue value) {
 		if (!(value instanceof JsonString)) {
-			return CodecResult.error("Name is not a String");
+			return Result.error("Name is not a String");
 		}
 
 		String name = value.asString().value();
 		T named = this.byName.apply(name);
 
-		return named != null ? CodecResult.success(named) : CodecResult.error("No entry named " + name);
+		return named != null ? Result.success(named) : Result.error("No entry named " + name);
 	}
 }

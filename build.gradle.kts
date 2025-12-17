@@ -18,6 +18,7 @@ repositories {
         }
         forRepositories(maven("https://mvn.devos.one/releases/")).filter {
             includeModule("fish.cichlidmc", "tiny-json")
+            includeModule("fish.cichlidmc", "fishflakes")
         }
     }
 }
@@ -25,6 +26,7 @@ repositories {
 dependencies {
     compileOnlyApi(libs.jetbrains.annotations)
     api(libs.tiny.json)
+    api(libs.fishflakes)
     testImplementation(libs.bundles.junit)
 }
 
@@ -40,7 +42,7 @@ tasks.test {
 java {
     withSourcesJar()
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 

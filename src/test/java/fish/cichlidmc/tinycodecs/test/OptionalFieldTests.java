@@ -14,6 +14,6 @@ public class OptionalFieldTests {
 				.put("i", 1)
 				.put("s", "test");
 
-		assertEquals(expected, TestRecord.CODEC.codec().encode(record).getOrThrow());
+		assertEquals(expected, TestRecord.CODEC.codec().encode(record).valueOrThrow());
 	}
 }

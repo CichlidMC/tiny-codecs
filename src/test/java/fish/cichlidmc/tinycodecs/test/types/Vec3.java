@@ -1,20 +1,20 @@
 package fish.cichlidmc.tinycodecs.test.types;
 
-import fish.cichlidmc.tinycodecs.api.CodecResult;
+import fish.cichlidmc.fishflakes.api.Result;
 import fish.cichlidmc.tinycodecs.api.codec.Codec;
 
 import java.util.Arrays;
 
 public record Vec3(int x, int y, int z) {
 	public static final Codec<Vec3> INT_ARRAY_CODEC = Codec.INT.listOf().comapFlatMap(
-			list -> list.size() != 3 ? CodecResult.error("Wrong size") : CodecResult.success(new Vec3(list.get(0), list.get(1), list.get(2))),
+			list -> list.size() != 3 ? Result.error("Wrong size") : Result.success(new Vec3(list.get(0), list.get(1), list.get(2))),
 			vec -> Arrays.asList(vec.x, vec.y, vec.z)
 	);
 	public static final Codec<Vec3> STRING_CODEC = Codec.STRING.comapFlatMap(
 			string -> {
 				String[] split = string.split(",");
 				if (split.length != 3) {
-					return CodecResult.error("Wrong size");
+					return Result.error("Wrong size");
 				}
 
 				int[] ints = new int[3];
@@ -22,11 +22,11 @@ public record Vec3(int x, int y, int z) {
 					try {
 						ints[i] = Integer.parseInt(split[i]);
 					} catch (NumberFormatException e) {
-						return CodecResult.error("not an int");
+						return Result.error("not an int");
 					}
 				}
 
-				return CodecResult.success(new Vec3(ints[0], ints[1], ints[2]));
+				return Result.success(new Vec3(ints[0], ints[1], ints[2]));
 			},
 			vec -> vec.x + "," + vec.y + ',' + vec.z
 	);

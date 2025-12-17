@@ -1,6 +1,6 @@
 package fish.cichlidmc.tinycodecs.api.codec;
 
-import fish.cichlidmc.tinycodecs.api.CodecResult;
+import fish.cichlidmc.fishflakes.api.Result;
 import fish.cichlidmc.tinycodecs.api.Functions.F1;
 import fish.cichlidmc.tinycodecs.api.Functions.F2;
 import fish.cichlidmc.tinycodecs.api.Functions.F3;
@@ -125,9 +125,9 @@ public final class CompositeCodec {
 					return Optional.empty();
 				}, json -> {
 					try {
-						return CodecResult.success(decoder.apply(json));
+						return Result.success(decoder.apply(json));
 					} catch (JsonException e) {
-						return CodecResult.error(e.getMessage());
+						return Result.error(e.getMessage());
 					}
 				}
 		);
@@ -143,8 +143,8 @@ public final class CompositeCodec {
 
 	private static <F> F decodeField(JsonObject json, MapCodec<F> codec) {
 		switch (codec.decode(json)) {
-			case CodecResult.Success(F value) -> { return value; }
-			case CodecResult.Error(String message) -> throw new JsonException("Failed to decode field: " + message);
+			case Result.Success(F value) -> { return value; }
+			case Result.Error(String message) -> throw new JsonException("Failed to decode field: " + message);
 		}
 	}
 }

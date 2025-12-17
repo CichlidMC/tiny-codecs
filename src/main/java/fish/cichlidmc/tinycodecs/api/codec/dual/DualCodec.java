@@ -1,6 +1,6 @@
 package fish.cichlidmc.tinycodecs.api.codec.dual;
 
-import fish.cichlidmc.tinycodecs.api.CodecResult;
+import fish.cichlidmc.fishflakes.api.Result;
 import fish.cichlidmc.tinycodecs.api.codec.Codec;
 import fish.cichlidmc.tinycodecs.api.codec.CompositeCodec;
 import fish.cichlidmc.tinycodecs.api.codec.map.MapCodec;
@@ -14,7 +14,7 @@ import java.util.function.Supplier;
  * @see CompositeCodec
  */
 public record DualCodec<T>(Codec<T> codec, MapCodec<T> mapCodec) {
-	public DualCodec<T> validate(Function<? super T, ? extends CodecResult<T>> validator) {
+	public DualCodec<T> validate(Function<? super T, ? extends Result<T>> validator) {
 		return this.flatXmap(validator, validator);
 	}
 
@@ -22,15 +22,15 @@ public record DualCodec<T>(Codec<T> codec, MapCodec<T> mapCodec) {
 		return new DualCodec<>(this.codec.xmap(to, from), this.mapCodec.xmap(to, from));
 	}
 
-	public <B> DualCodec<B> comapFlatMap(Function<? super T, ? extends CodecResult<? extends B>> to, Function<? super B, ? extends T> from) {
+	public <B> DualCodec<B> comapFlatMap(Function<? super T, ? extends Result<? extends B>> to, Function<? super B, ? extends T> from) {
 		return new DualCodec<>(this.codec.comapFlatMap(to, from), this.mapCodec.comapFlatMap(to, from));
 	}
 
-	public <B> DualCodec<B> flatComapMap(Function<? super T, ? extends B> to, Function<? super B, ? extends CodecResult<? extends T>> from) {
+	public <B> DualCodec<B> flatComapMap(Function<? super T, ? extends B> to, Function<? super B, ? extends Result<? extends T>> from) {
 		return new DualCodec<>(this.codec.flatComapMap(to, from), this.mapCodec.flatComapMap(to, from));
 	}
 
-	public <B> DualCodec<B> flatXmap(Function<? super T, ? extends CodecResult<? extends B>> to, Function<? super B, ? extends CodecResult<? extends T>> from) {
+	public <B> DualCodec<B> flatXmap(Function<? super T, ? extends Result<? extends B>> to, Function<? super B, ? extends Result<? extends T>> from) {
 		return new DualCodec<>(this.codec.flatXmap(to, from), this.mapCodec.flatXmap(to, from));
 	}
 

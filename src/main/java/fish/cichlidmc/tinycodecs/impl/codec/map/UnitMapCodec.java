@@ -1,6 +1,6 @@
 package fish.cichlidmc.tinycodecs.impl.codec.map;
 
-import fish.cichlidmc.tinycodecs.api.CodecResult;
+import fish.cichlidmc.fishflakes.api.Result;
 import fish.cichlidmc.tinycodecs.api.codec.map.MapCodec;
 import fish.cichlidmc.tinyjson.value.composite.JsonObject;
 
@@ -13,7 +13,7 @@ public record UnitMapCodec<T>(T unit) implements MapCodec<T> {
 	}
 
 	@Override
-	public CodecResult<T> decode(JsonObject json) {
-		return CodecResult.success(this.unit);
+	public Result<T> decode(JsonObject json) {
+		return Result.success(this.unit);
 	}
 }

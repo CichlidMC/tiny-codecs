@@ -1,7 +1,7 @@
 package fish.cichlidmc.tinycodecs.test;
 
-import fish.cichlidmc.tinycodecs.api.CodecResult;
-import fish.cichlidmc.tinycodecs.api.Either;
+import fish.cichlidmc.fishflakes.api.Either;
+import fish.cichlidmc.fishflakes.api.Result;
 import fish.cichlidmc.tinycodecs.api.codec.Codec;
 import fish.cichlidmc.tinycodecs.test.types.Vec3;
 import fish.cichlidmc.tinyjson.value.JsonValue;
@@ -18,8 +18,8 @@ public final class EitherTests {
 	@Test
 	public void left() {
 		JsonValue input = new JsonString("1,2,3");
-		CodecResult<Vec3> result = Vec3.STRING_OR_INT_ARRAY_CODEC.decode(input);
-		if (result instanceof CodecResult.Error(String message)) {
+		Result<Vec3> result = Vec3.STRING_OR_INT_ARRAY_CODEC.decode(input);
+		if (result instanceof Result.Error(String message)) {
 			fail(message);
 		}
 	}
@@ -29,8 +29,8 @@ public final class EitherTests {
 		JsonValue input = JsonArray.of(
 				new JsonNumber(1), new JsonNumber(2), new JsonNumber(3)
 		);
-		CodecResult<Vec3> result = Vec3.STRING_OR_INT_ARRAY_CODEC.decode(input);
-		if (result instanceof CodecResult.Error(String message)) {
+		Result<Vec3> result = Vec3.STRING_OR_INT_ARRAY_CODEC.decode(input);
+		if (result instanceof Result.Error(String message)) {
 			fail(message);
 		}
 	}
@@ -38,7 +38,7 @@ public final class EitherTests {
 	@Test
 	public void neither() {
 		JsonValue input = new JsonObject();
-		CodecResult<Vec3> result = Vec3.STRING_OR_INT_ARRAY_CODEC.decode(input);
+		Result<Vec3> result = Vec3.STRING_OR_INT_ARRAY_CODEC.decode(input);
 		assertTrue(result.isError());
 	}
 
@@ -46,7 +46,7 @@ public final class EitherTests {
 	public void bothStrict() {
 		Codec<Vec3> codec = Vec3.STRING_CODEC.xor(Vec3.ZERO_UNIT_CODEC).xmap(Either::join, Either::left);
 		JsonValue input = new JsonString("4,5,6");
-		CodecResult<Vec3> result = codec.decode(input);
+		Result<Vec3> result = codec.decode(input);
 		assertTrue(result.isError());
 	}
 
@@ -54,7 +54,7 @@ public final class EitherTests {
 	public void bothLoose() {
 		Codec<Vec3> codec = Vec3.STRING_CODEC.either(Vec3.ZERO_UNIT_CODEC).xmap(Either::join, Either::left);
 		JsonValue input = new JsonString("4,5,6");
-		CodecResult<Vec3> result = codec.decode(input);
+		Result<Vec3> result = codec.decode(input);
 		assertTrue(result.isSuccess());
 	}
 }

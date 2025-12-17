@@ -1,6 +1,6 @@
 package fish.cichlidmc.tinycodecs.api.codec.map;
 
-import fish.cichlidmc.tinycodecs.api.CodecResult;
+import fish.cichlidmc.fishflakes.api.Result;
 import fish.cichlidmc.tinycodecs.api.codec.Encoder;
 import fish.cichlidmc.tinyjson.value.composite.JsonObject;
 import org.jetbrains.annotations.ApiStatus;
@@ -34,10 +34,10 @@ public interface MapEncoder<T> {
 	 * @return a new MapEncoder that applies the given result-bearing function before encoding
 	 */
 	@ApiStatus.NonExtendable
-	default <B> MapEncoder<B> flatComap(Function<? super B, ? extends CodecResult<? extends T>> function) {
+	default <B> MapEncoder<B> flatComap(Function<? super B, ? extends Result<? extends T>> function) {
 		return (json, value) -> switch (function.apply(value)) {
-			case CodecResult.Success(/* It's!! */ T v /* time!!! */) -> this.encode(json, v);
-			case CodecResult.Error(String message) -> Optional.of(message);
+			case Result.Success(/* It's!! */ T v /* time!!! */) -> this.encode(json, v);
+			case Result.Error(String message) -> Optional.of(message);
 		};
 	}
 }

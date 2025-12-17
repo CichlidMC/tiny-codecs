@@ -1,6 +1,6 @@
 package fish.cichlidmc.tinycodecs.test;
 
-import fish.cichlidmc.tinycodecs.api.CodecResult;
+import fish.cichlidmc.fishflakes.api.Result;
 import fish.cichlidmc.tinycodecs.test.types.Animal;
 import fish.cichlidmc.tinycodecs.test.types.Shape;
 import fish.cichlidmc.tinyjson.value.JsonValue;
@@ -16,8 +16,8 @@ public class DispatchTests {
 		JsonObject json = new JsonObject()
 				.put("radius", 4);
 
-		CodecResult<Shape> result = Shape.CODEC.decode(json);
-		assertInstanceOf(CodecResult.Error.class, result);
+		Result<Shape> result = Shape.CODEC.decode(json);
+		assertInstanceOf(Result.Error.class, result);
 	}
 
 	@Test
@@ -26,7 +26,7 @@ public class DispatchTests {
 				.put("radius", 4)
 				.put("type", "CIRCLE");
 
-		Shape shape = Shape.CODEC.decode(json).getOrThrow();
+		Shape shape = Shape.CODEC.decode(json).valueOrThrow();
 		assertEquals(Shape.Type.CIRCLE, shape.getType());
 	}
 
@@ -38,7 +38,7 @@ public class DispatchTests {
 				.put("height", 2);
 
 		Shape shape = new Shape.Triangle(1, 2);
-		JsonValue actual = Shape.CODEC.encode(shape).getOrThrow();
+		JsonValue actual = Shape.CODEC.encode(shape).valueOrThrow();
 		assertEquals(expected, actual);
 	}
 
@@ -48,7 +48,7 @@ public class DispatchTests {
 				.put("type", "cat")
 				.put("sound", "meow");
 
-		Animal animal = Animal.CODEC.decode(json).getOrThrow();
+		Animal animal = Animal.CODEC.decode(json).valueOrThrow();
 		assertInstanceOf(Animal.Cat.class, animal);
 		assertEquals("meow", animal.sound());
 	}

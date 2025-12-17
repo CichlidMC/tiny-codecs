@@ -1,7 +1,7 @@
 package fish.cichlidmc.tinycodecs.api.codec;
 
-import fish.cichlidmc.tinycodecs.api.CodecResult;
-import fish.cichlidmc.tinycodecs.api.Either;
+import fish.cichlidmc.fishflakes.api.Either;
+import fish.cichlidmc.fishflakes.api.Result;
 import fish.cichlidmc.tinycodecs.api.codec.dual.DualCodec;
 import fish.cichlidmc.tinycodecs.api.codec.map.MapCodec;
 import fish.cichlidmc.tinycodecs.impl.Lazy;
@@ -46,7 +46,7 @@ public interface Codec<T> extends Encoder<T>, Decoder<T> {
 
 	// transforms
 
-	default Codec<T> validate(Function<? super T, ? extends CodecResult<T>> validator) {
+	default Codec<T> validate(Function<? super T, ? extends Result<T>> validator) {
 		return this.flatXmap(validator, validator);
 	}
 
@@ -54,15 +54,15 @@ public interface Codec<T> extends Encoder<T>, Decoder<T> {
 		return Codec.of(this.comap(from), this.map(to));
 	}
 
-	default <B> Codec<B> comapFlatMap(Function<? super T, ? extends CodecResult<? extends B>> to, Function<? super B, ? extends T> from) {
+	default <B> Codec<B> comapFlatMap(Function<? super T, ? extends Result<? extends B>> to, Function<? super B, ? extends T> from) {
 		return Codec.of(this.comap(from), this.flatMap(to));
 	}
 
-	default <B> Codec<B> flatComapMap(Function<? super T, ? extends B> to, Function<? super B, ? extends CodecResult<? extends T>> from) {
+	default <B> Codec<B> flatComapMap(Function<? super T, ? extends B> to, Function<? super B, ? extends Result<? extends T>> from) {
 		return Codec.of(this.flatComap(from), this.map(to));
 	}
 
-	default <B> Codec<B> flatXmap(Function<? super T, ? extends CodecResult<? extends B>> to, Function<? super B, ? extends CodecResult<? extends T>> from) {
+	default <B> Codec<B> flatXmap(Function<? super T, ? extends Result<? extends B>> to, Function<? super B, ? extends Result<? extends T>> from) {
 		return Codec.of(this.flatComap(from), this.flatMap(to));
 	}
 
@@ -85,7 +85,7 @@ public interface Codec<T> extends Encoder<T>, Decoder<T> {
 	default Codec<List<T>> listOrSingle() {
 		return this.listOf().withAlternative(this.flatComapMap(
 				List::of,
-				list -> list.size() == 1 ? CodecResult.success(list.getFirst()) : CodecResult.error("Not a singleton")
+				list -> list.size() == 1 ? Result.success(list.getFirst()) : Result.error("Not a singleton")
 		));
 	}
 
@@ -118,12 +118,12 @@ public interface Codec<T> extends Encoder<T>, Decoder<T> {
 	static <T> Codec<T> of(Encoder<? super T> encoder, Decoder<T> decoder) {
 		return new Codec<>() {
 			@Override
-			public CodecResult<? extends JsonValue> encode(T value) {
+			public Result<? extends JsonValue> encode(T value) {
 				return encoder.encode(value);
 			}
 
 			@Override
-			public CodecResult<T> decode(JsonValue json) {
+			public Result<T> decode(JsonValue json) {
 				return decoder.decode(json);
 			}
 		};
@@ -134,12 +134,12 @@ public interface Codec<T> extends Encoder<T>, Decoder<T> {
 	 */
 	static <T> Codec<T> throwing(Function<? super T, ? extends JsonValue> encoder, Function<? super JsonValue, ? extends T> decoder) {
 		return of(
-				value -> CodecResult.success(encoder.apply(value)),
+				value -> Result.success(encoder.apply(value)),
 				json -> {
 					try {
-						return CodecResult.success(decoder.apply(json));
+						return Result.success(decoder.apply(json));
 					} catch (JsonException e) {
-						return CodecResult.error(e.getMessage());
+						return Result.error(e.getMessage());
 					}
 				}
 		);

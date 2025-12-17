@@ -1,6 +1,6 @@
 package fish.cichlidmc.tinycodecs.api.codec.map;
 
-import fish.cichlidmc.tinycodecs.api.CodecResult;
+import fish.cichlidmc.fishflakes.api.Result;
 import fish.cichlidmc.tinycodecs.api.codec.Codec;
 import fish.cichlidmc.tinycodecs.impl.Lazy;
 import fish.cichlidmc.tinycodecs.impl.codec.map.MapCodecAsCodec;
@@ -24,7 +24,7 @@ public interface MapCodec<T> extends MapEncoder<T>, MapDecoder<T> {
 
 	// transforms
 
-	default MapCodec<T> validate(Function<? super T, ? extends CodecResult<T>> validator) {
+	default MapCodec<T> validate(Function<? super T, ? extends Result<T>> validator) {
 		return this.flatXmap(validator, validator);
 	}
 
@@ -32,15 +32,15 @@ public interface MapCodec<T> extends MapEncoder<T>, MapDecoder<T> {
 		return of(this.comap(from), this.map(to));
 	}
 
-	default <B> MapCodec<B> comapFlatMap(Function<? super T, ? extends CodecResult<? extends B>> to, Function<? super B, ? extends T> from) {
+	default <B> MapCodec<B> comapFlatMap(Function<? super T, ? extends Result<? extends B>> to, Function<? super B, ? extends T> from) {
 		return of(this.comap(from), this.flatMap(to));
 	}
 
-	default <B> MapCodec<B> flatComapMap(Function<? super T, ? extends B> to, Function<? super B, ? extends CodecResult<? extends T>> from) {
+	default <B> MapCodec<B> flatComapMap(Function<? super T, ? extends B> to, Function<? super B, ? extends Result<? extends T>> from) {
 		return of(this.flatComap(from), this.map(to));
 	}
 
-	default <B> MapCodec<B> flatXmap(Function<? super T, ? extends CodecResult<? extends B>> to, Function<? super B, ? extends CodecResult<? extends T>> from) {
+	default <B> MapCodec<B> flatXmap(Function<? super T, ? extends Result<? extends B>> to, Function<? super B, ? extends Result<? extends T>> from) {
 		return of(this.flatComap(from), this.flatMap(to));
 	}
 
@@ -54,7 +54,7 @@ public interface MapCodec<T> extends MapEncoder<T>, MapDecoder<T> {
 			}
 
 			@Override
-			public CodecResult<T> decode(JsonObject json) {
+			public Result<T> decode(JsonObject json) {
 				return decoder.decode(json);
 			}
 		};

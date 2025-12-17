@@ -1,6 +1,6 @@
 package fish.cichlidmc.tinycodecs.impl.codec.map;
 
-import fish.cichlidmc.tinycodecs.api.CodecResult;
+import fish.cichlidmc.fishflakes.api.Result;
 import fish.cichlidmc.tinycodecs.api.codec.Codec;
 import fish.cichlidmc.tinycodecs.api.codec.map.MapCodec;
 import fish.cichlidmc.tinyjson.value.JsonValue;
@@ -13,8 +13,8 @@ public record FieldOfCodec<T>(Codec<T> wrapped, String name) implements MapCodec
 	@Override
 	public Optional<String> encode(JsonObject json, T value) {
 		return switch (this.wrapped.encode(value)) {
-			case CodecResult.Error(String message) -> Optional.of(message);
-			case CodecResult.Success(JsonValue encoded) -> {
+			case Result.Error(String message) -> Optional.of(message);
+			case Result.Success(JsonValue encoded) -> {
 				if (!(encoded instanceof JsonNull)) {
 					json.put(this.name, encoded);
 				}
@@ -25,7 +25,7 @@ public record FieldOfCodec<T>(Codec<T> wrapped, String name) implements MapCodec
 	}
 
 	@Override
-	public CodecResult<T> decode(JsonObject json) {
+	public Result<T> decode(JsonObject json) {
 		return this.wrapped.decode(json.getOrJsonNull(this.name));
 	}
 }
