@@ -4,9 +4,12 @@ import fish.cichlidmc.fishflakes.api.Result;
 import fish.cichlidmc.tinycodecs.api.codec.Codec;
 import fish.cichlidmc.tinycodecs.impl.Lazy;
 import fish.cichlidmc.tinycodecs.impl.codec.map.MapCodecAsCodec;
+import fish.cichlidmc.tinycodecs.impl.codec.map.MapMapCodec;
 import fish.cichlidmc.tinycodecs.impl.codec.map.UnitMapCodec;
 import fish.cichlidmc.tinyjson.value.composite.JsonObject;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -67,5 +70,13 @@ public interface MapCodec<T> extends MapEncoder<T>, MapDecoder<T> {
 				(json, value) -> lazy.get().encode(json, value),
 				json -> lazy.get().decode(json)
 		);
+	}
+
+	static <K, V, M extends Map<K, V>> MapCodec<M> map(Supplier<M> mapFactory, Codec<K> keyCodec, Codec<V> valueCodec) {
+		return new MapMapCodec<>(mapFactory, keyCodec, valueCodec);
+	}
+
+	static <K, V> MapCodec<Map<K, V>> map(Codec<K> keyCodec, Codec<V> valueCodec) {
+		return map(HashMap::new, keyCodec, valueCodec);
 	}
 }
