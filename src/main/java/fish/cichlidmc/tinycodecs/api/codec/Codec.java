@@ -9,6 +9,7 @@ import fish.cichlidmc.tinycodecs.impl.codec.ByNameCodec;
 import fish.cichlidmc.tinycodecs.impl.codec.DispatchCodec;
 import fish.cichlidmc.tinycodecs.impl.codec.EitherCodec;
 import fish.cichlidmc.tinycodecs.impl.codec.ListCodec;
+import fish.cichlidmc.tinycodecs.impl.codec.RecursiveCodec;
 import fish.cichlidmc.tinycodecs.impl.codec.UnitCodec;
 import fish.cichlidmc.tinycodecs.impl.codec.map.FieldOfCodec;
 import fish.cichlidmc.tinycodecs.impl.codec.optional.DefaultedOptionalCodec;
@@ -26,6 +27,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 /// A Codec is both an encoder and decoder of some type of object.
 /// @see CompositeCodec
@@ -148,6 +150,10 @@ public interface Codec<T> extends Encoder<T>, Decoder<T> {
 				value -> lazy.get().encode(value),
 				json -> lazy.get().decode(json)
 		);
+	}
+
+	static <T> Codec<T> recursive(UnaryOperator<Codec<T>> factory) {
+		return new RecursiveCodec<>(factory);
 	}
 
 	static <T extends Number> Codec<T> number(Function<Number, T> decoder) {

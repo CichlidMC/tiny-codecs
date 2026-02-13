@@ -5,6 +5,7 @@ import fish.cichlidmc.tinycodecs.api.codec.Codec;
 import fish.cichlidmc.tinycodecs.impl.Lazy;
 import fish.cichlidmc.tinycodecs.impl.codec.map.MapCodecAsCodec;
 import fish.cichlidmc.tinycodecs.impl.codec.map.MapMapCodec;
+import fish.cichlidmc.tinycodecs.impl.codec.map.RecursiveMapCodec;
 import fish.cichlidmc.tinycodecs.impl.codec.map.UnitMapCodec;
 import fish.cichlidmc.tinyjson.value.composite.JsonObject;
 
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 /// Similar to a [Codec], but operates specifically on maps ([JsonObject]s).
 public interface MapCodec<T> extends MapEncoder<T>, MapDecoder<T> {
@@ -70,6 +72,10 @@ public interface MapCodec<T> extends MapEncoder<T>, MapDecoder<T> {
 				(json, value) -> lazy.get().encode(json, value),
 				json -> lazy.get().decode(json)
 		);
+	}
+
+	static <T> MapCodec<T> recursive(UnaryOperator<MapCodec<T>> factory) {
+		return new RecursiveMapCodec<>(factory);
 	}
 
 	static <K, V, M extends Map<K, V>> MapCodec<M> map(Supplier<M> mapFactory, Codec<K> keyCodec, Codec<V> valueCodec) {
